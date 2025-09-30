@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTestStore } from '../hooks/useTestStore';
+import { testStore } from '../store/testStore';
 import { saveTestResult } from '../api/supabase';
+import { parsePassageWithHighlighting, extractAnchorReference } from '../utils/passageUtils';
 import './TestPage.css';
 
 export default function TestPage() {
@@ -19,6 +21,12 @@ export default function TestPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [passageStartTime] = useState(Date.now());
   const [timerVisible, setTimerVisible] = useState(true);
+  const highlightedAnchorRef = useRef<HTMLSpanElement>(null);
+  
+  // Analytics tracking
+  const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, number>>({});
+  const [readingStartTime] = useState(Date.now());
+  const [questionTimes, setQuestionTimes] = useState<Record<string, number>>({});
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,16 +40,46 @@ export default function TestPage() {
     if (currentPassage) {
       console.log('TestPage mounted - Timer running for passage:', currentPassage.title);
       console.log('Current session time:', sessionTime, 'seconds');
+      console.log('Timer running state:', testStore.getState().timerRunning);
+      
+      // Start timing for the first question
+      const firstQuestion = currentPassage.questions[0];
+      if (firstQuestion) {
+        setQuestionStartTimes(prev => ({
+          ...prev,
+          [firstQuestion.id]: Date.now()
+        }));
+      }
     }
     
     const timer = setInterval(() => {
-      incrementTime();
+      console.log('Timer tick - sessionTime:', sessionTime, 'timerRunning:', testStore.getState().timerRunning);
+      testStore.incrementTime();
     }, 1000);
     return () => {
       console.log('TestPage unmounting - Timer stopped');
       clearInterval(timer);
     };
-  }, [incrementTime, currentPassage, sessionTime]);
+  }, [currentPassage]);
+
+  // Auto-scroll to highlighted anchor when question changes
+  useEffect(() => {
+    if (highlightedAnchorRef.current && currentPassage) {
+      const currentQuestion = currentPassage.questions[currentQuestionIndex];
+      const currentAnchorReference = extractAnchorReference(currentQuestion?.text);
+      
+      if (currentAnchorReference) {
+        // Small delay to ensure the DOM has updated with the highlighting
+        setTimeout(() => {
+          highlightedAnchorRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest'
+          });
+        }, 100);
+      }
+    }
+  }, [currentQuestionIndex, currentPassage]);
 
   if (!currentPassage || !currentSession) {
     return (
@@ -58,6 +96,13 @@ export default function TestPage() {
   }
 
   const currentQuestion = currentPassage.questions[currentQuestionIndex];
+  
+  // Extract anchor reference for highlighting
+  const currentAnchorReference = extractAnchorReference(currentQuestion?.text);
+  
+  // Debug logging
+  console.log('Current question text:', currentQuestion?.text);
+  console.log('Extracted anchor reference:', currentAnchorReference);
   
   if (!currentQuestion) {
     return (
@@ -78,6 +123,17 @@ export default function TestPage() {
 
   const handleAnswerSelect = (questionId: string, answer: 'A' | 'B' | 'C' | 'D') => {
     console.log('Answer selected:', { questionId, answer });
+    
+    // Track time spent on this question
+    const questionStartTime = questionStartTimes[questionId];
+    if (questionStartTime) {
+      const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+      setQuestionTimes(prev => ({
+        ...prev,
+        [questionId]: timeSpent
+      }));
+    }
+    
     setAnswers(prev => {
       const newAnswers = {
         ...prev,
@@ -90,13 +146,57 @@ export default function TestPage() {
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < currentPassage.questions.length - 1) {
+      // Track time for current question before moving
+      const currentQuestion = currentPassage.questions[currentQuestionIndex];
+      if (currentQuestion) {
+        const questionStartTime = questionStartTimes[currentQuestion.id];
+        if (questionStartTime) {
+          const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+          setQuestionTimes(prev => ({
+            ...prev,
+            [currentQuestion.id]: timeSpent
+          }));
+        }
+      }
+      
       setCurrentQuestionIndex(prev => prev + 1);
+      
+      // Start timing for next question
+      const nextQuestion = currentPassage.questions[currentQuestionIndex + 1];
+      if (nextQuestion) {
+        setQuestionStartTimes(prev => ({
+          ...prev,
+          [nextQuestion.id]: Date.now()
+        }));
+      }
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
+      // Track time for current question before moving
+      const currentQuestion = currentPassage.questions[currentQuestionIndex];
+      if (currentQuestion) {
+        const questionStartTime = questionStartTimes[currentQuestion.id];
+        if (questionStartTime) {
+          const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+          setQuestionTimes(prev => ({
+            ...prev,
+            [currentQuestion.id]: timeSpent
+          }));
+        }
+      }
+      
       setCurrentQuestionIndex(prev => prev - 1);
+      
+      // Start timing for previous question
+      const prevQuestion = currentPassage.questions[currentQuestionIndex - 1];
+      if (prevQuestion) {
+        setQuestionStartTimes(prev => ({
+          ...prev,
+          [prevQuestion.id]: Date.now()
+        }));
+      }
     }
   };
 
@@ -117,11 +217,30 @@ export default function TestPage() {
       
       // Calculate time spent in seconds
       const timeSpent = Math.floor((Date.now() - passageStartTime) / 1000);
+      const readingTime = Math.floor((Date.now() - readingStartTime) / 1000);
+      const answeringTime = timeSpent - readingTime;
+      
       console.log('Passage start time:', new Date(passageStartTime).toLocaleTimeString());
       console.log('Current time:', new Date().toLocaleTimeString());
       console.log('Time spent (seconds):', timeSpent);
+      console.log('Reading time:', readingTime);
+      console.log('Answering time:', answeringTime);
+      console.log('Question times:', questionTimes);
       
+      // Create enhanced attempt with analytics data
       const attempt = submitAnswers(currentPassage.id, answers, timeSpent);
+      
+      // Add analytics data to the attempt
+      if (attempt) {
+        attempt.questionTimes = questionTimes;
+        attempt.questionTypes = currentPassage.questions.reduce((acc, q) => {
+          acc[q.id] = (q.questionType || 'detail') as any;
+          return acc;
+        }, {} as Record<string, any>);
+        attempt.passageType = currentPassage.passageType || 'informational';
+        attempt.readingTime = readingTime;
+        attempt.answeringTime = answeringTime;
+      }
       console.log('Attempt created:', attempt);
 
       // Save test result to Supabase
@@ -210,7 +329,7 @@ export default function TestPage() {
         <div className="passage-side">
           <h1 className="passage-title">{currentPassage.title}</h1>
           <div className="passage-content">
-            {currentPassage.content}
+            {parsePassageWithHighlighting(currentPassage.content, currentAnchorReference, highlightedAnchorRef)}
           </div>
         </div>
 
