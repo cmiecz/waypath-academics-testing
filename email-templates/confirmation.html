@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Email - ACT Prep</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f7;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .email-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #86868b;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+        .description {
+            font-size: 17px;
+            color: #86868b;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+        .confirm-button {
+            display: inline-block;
+            background: #007aff;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: -0.1px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+        .confirm-button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .backup-link {
+            font-size: 14px;
+            color: #86868b;
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            word-break: break-all;
+        }
+        .backup-link a {
+            color: #007aff;
+            text-decoration: none;
+        }
+        .footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #86868b;
+        }
+        .footer a {
+            color: #007aff;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .email-card {
+                padding: 32px 24px;
+            }
+            .title {
+                font-size: 24px;
+            }
+            .confirm-button {
+                padding: 14px 28px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="email-card">
+            <div class="logo">ACT Prep</div>
+            <div class="subtitle">WayPath Academics</div>
+            
+            <h1 class="title">Confirm Your Email</h1>
+            <p class="description">
+                Welcome to ACT Prep! Please confirm your email address to complete your account setup and start practicing for your ACT test.
+            </p>
+            
+            <a href="{{ .ConfirmationURL }}" class="confirm-button">
+                Confirm Email Address
+            </a>
+            
+            <div class="backup-link">
+                <p style="margin: 0 0 8px 0; font-weight: 500;">Can't click the button?</p>
+                <p style="margin: 0;">Copy and paste this link into your browser:</p>
+                <a href="{{ .ConfirmationURL }}">{{ .ConfirmationURL }}</a>
+            </div>
+            
+            <div class="footer">
+                <p style="margin: 0;">
+                    This email was sent from ACT Prep. If you didn't create an account, you can safely ignore this email.
+                </p>
+                <p style="margin: 8px 0 0 0;">
+                    <a href="https://act-prep-web.vercel.app">Visit ACT Prep</a> | 
+                    <a href="mailto:support@waypathacademics.com">Contact Support</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

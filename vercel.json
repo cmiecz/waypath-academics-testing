@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "REACT_APP_SUPABASE_URL": "https://glhwxyhhycqytfrsjzyz.supabase.co",
+    "REACT_APP_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsaHd4eWhoeWNxeXRmcnNqenl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM1NjQ3MjIsImV4cCI6MjA2OTE0MDcyMn0.4SAwtIdGUgcFGvInISOa4pNUw-RuihSqvnYxDxc-wo0"
+  }
+}
