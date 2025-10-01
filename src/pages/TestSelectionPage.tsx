@@ -43,26 +43,39 @@ export default function TestSelectionPage() {
 
   return (
     <div className="test-selection-page">
-      <div className="test-selection-container">
-        <div className="selection-header">
-          <div className="header-content">
-            <h1>Welcome, {currentUser?.name}!</h1>
-            <p>Select a subject and test mode to begin</p>
-          </div>
-          <div className="header-actions">
-            <button onClick={handleViewReports} className="btn-reports">
-              📊 View Reports
-            </button>
-            {currentUser?.email === 'admin@waypathacademics.com' && (
-              <button onClick={handleAdmin} className="btn-admin">
-                ⚙️ Admin
-              </button>
-            )}
-            <button onClick={handleSignOut} className="btn-secondary">
-              Sign Out
-            </button>
+      {/* Header */}
+      <div className="test-selection-header">
+        <div className="header-left">
+          <div className="logo-waypath">
+            <div className="logo-icon">W</div>
+            <div className="logo-text">
+              <div className="logo-primary">WAYPATH</div>
+              <div className="logo-secondary">Academics</div>
+            </div>
           </div>
         </div>
+        <div className="header-actions">
+          <button onClick={handleViewReports} className="btn-waypath">
+            <i className="fas fa-chart-bar"></i> View Reports
+          </button>
+          {currentUser?.email === 'admin@waypathacademics.com' && (
+            <button onClick={handleAdmin} className="btn-waypath" style={{background: 'transparent', color: 'var(--waypath-secondary)', border: '2px solid var(--waypath-primary)'}}>
+              <i className="fas fa-cogs"></i> Admin
+            </button>
+          )}
+          <button onClick={handleSignOut} className="btn-waypath" style={{background: 'transparent', color: 'var(--waypath-secondary)', border: '2px solid var(--waypath-primary)'}}>
+            <i className="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        </div>
+      </div>
+
+      {/* Welcome Section */}
+      <div className="welcome-section">
+        <h1>Welcome, {currentUser?.name}!</h1>
+        <p className="subtitle">Select a subject and test mode to begin</p>
+      </div>
+
+      <div className="test-selection-container">
 
         {/* Test Mode Toggle */}
         <div className="test-mode-selection">
@@ -109,7 +122,7 @@ export default function TestSelectionPage() {
 
         <div className="subjects-grid">
           <div className="subject-card disabled">
-            <div className="subject-icon">📚</div>
+            <div className="subject-icon"><i className="fas fa-books"></i></div>
             <h3>English</h3>
             <p>Grammar, punctuation, and rhetorical skills</p>
             <div className="subject-badge coming-soon">Coming Soon</div>
@@ -123,7 +136,7 @@ export default function TestSelectionPage() {
           </div>
 
           <div className="subject-card available" onClick={() => handleSubjectSelect('Reading')}>
-            <div className="subject-icon">📖</div>
+            <div className="subject-icon"><i className="fas fa-book-open"></i></div>
             <h3>Reading</h3>
             <p>Comprehension and analysis of prose</p>
             <div className="subject-badge">Available</div>
