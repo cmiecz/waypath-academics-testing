@@ -1,7 +1,7 @@
 .dashboard-page {
   min-height: 100vh;
   background: linear-gradient(135deg, var(--waypath-background) 0%, rgba(91, 155, 181, 0.05) 100%);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   position: relative;
 }
 
@@ -22,8 +22,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
   background: var(--waypath-background);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -31,8 +31,8 @@
 }
 
 .welcome-section {
-  padding: var(--spacing-md) var(--spacing-lg);
-  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 .welcome-section h1 {
@@ -40,7 +40,7 @@
   font-size: 1.75rem;
   font-weight: 600;
   color: var(--waypath-secondary);
-  margin: 0 0 var(--spacing-xs) 0;
+  margin: 0 0 4px 0;
   letter-spacing: -0.5px;
 }
 
