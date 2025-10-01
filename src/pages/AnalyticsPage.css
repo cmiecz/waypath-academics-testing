@@ -24,7 +24,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
   padding: var(--spacing-lg);
   background: var(--waypath-background);
   border-radius: var(--radius-xl);
@@ -32,7 +32,12 @@
   border: 1px solid rgba(91, 155, 181, 0.1);
 }
 
-.header-left h1 {
+.welcome-section {
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.welcome-section h1 {
   font-family: var(--font-heading);
   font-size: 1.75rem;
   font-weight: 600;
@@ -41,7 +46,7 @@
   letter-spacing: -0.5px;
 }
 
-.subtitle {
+.welcome-section .subtitle {
   font-size: 1rem;
   color: var(--waypath-primary);
   margin: 0;

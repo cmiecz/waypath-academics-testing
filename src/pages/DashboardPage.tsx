@@ -125,23 +125,37 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="dashboard-header">
         <div className="header-left">
-          <h1>Welcome back, {currentUser?.name}! <i className="fas fa-hand-wave"></i></h1>
-          <p className="subtitle">Track your progress and continue improving</p>
+          <div className="logo-waypath">
+            <div className="logo-icon">W</div>
+            <div className="logo-text">
+              <div className="logo-primary">WAYPATH</div>
+              <div className="logo-secondary">Academics</div>
+            </div>
+          </div>
         </div>
         <div className="header-actions">
-          <button onClick={handleStartTest} className="btn-primary">
+          <button onClick={handleStartTest} className="btn-waypath">
             Start New Test
           </button>
-          <button onClick={handleSignOut} className="btn-secondary">
+          <button onClick={() => navigate('/analytics')} className="btn-waypath" style={{background: 'transparent', color: 'var(--waypath-secondary)', border: '2px solid var(--waypath-primary)'}}>
+            View Analytics
+          </button>
+          <button onClick={handleSignOut} className="btn-waypath" style={{background: 'transparent', color: 'var(--waypath-secondary)', border: '2px solid var(--waypath-primary)'}}>
             Sign Out
           </button>
         </div>
       </div>
 
+      {/* Welcome Section */}
+      <div className="welcome-section">
+        <h1>Welcome back, {currentUser?.name}! <i className="fas fa-hand-wave"></i></h1>
+        <p className="subtitle">Track your progress and continue improving</p>
+      </div>
+
       {totalAttempts === 0 ? (
         // Empty State
         <div className="empty-state">
-          <div className="empty-icon">📚</div>
+          <div className="empty-icon"><i className="fas fa-books"></i></div>
           <h2>No Tests Yet</h2>
           <p>Start your first ACT practice test to see your progress here!</p>
           <button onClick={handleStartTest} className="btn-primary large">
