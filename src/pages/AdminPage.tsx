@@ -177,15 +177,15 @@ export default function AdminPage() {
       <div className="admin-container">
         <div className="admin-header">
           <div className="header-left">
-            <h1>📚 Passage Management</h1>
+            <h1><i className="fas fa-books"></i> Passage Management</h1>
             <p>Upload new passages and questions to the database</p>
           </div>
           <div className="header-actions">
             <button onClick={handleBackToApp} className="btn-back">
-              ← Back to Admin
+              <i className="fas fa-arrow-left"></i> Back to Admin
             </button>
             <button onClick={handleSignOut} className="btn-secondary">
-              Sign Out
+              <i className="fas fa-sign-out-alt"></i> Sign Out
             </button>
           </div>
         </div>

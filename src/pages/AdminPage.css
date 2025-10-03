@@ -22,9 +22,14 @@
 .admin-header h1 {
   font-size: 36px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--waypath-secondary);
   margin: 0 0 12px 0;
   letter-spacing: -0.5px;
+}
+
+.admin-header h1 i {
+  color: var(--waypath-primary);
+  margin-right: 12px;
 }
 
 .admin-header p {

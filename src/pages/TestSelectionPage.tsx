@@ -121,11 +121,11 @@ export default function TestSelectionPage() {
         </div>
 
         <div className="subjects-grid">
-          <div className="subject-card disabled">
+          <div className="subject-card available" onClick={() => handleSubjectSelect('English')}>
             <div className="subject-icon"><i className="fas fa-books"></i></div>
             <h3>English</h3>
             <p>Grammar, punctuation, and rhetorical skills</p>
-            <div className="subject-badge coming-soon">Coming Soon</div>
+            <div className="subject-badge">Available</div>
           </div>
 
           <div className="subject-card disabled">
@@ -135,11 +135,11 @@ export default function TestSelectionPage() {
             <div className="subject-badge coming-soon">Coming Soon</div>
           </div>
 
-          <div className="subject-card available" onClick={() => handleSubjectSelect('Reading')}>
+          <div className="subject-card disabled">
             <div className="subject-icon"><i className="fas fa-book-open"></i></div>
             <h3>Reading</h3>
             <p>Comprehension and analysis of prose</p>
-            <div className="subject-badge">Available</div>
+            <div className="subject-badge coming-soon">Coming Soon</div>
           </div>
 
           <div className="subject-card disabled">

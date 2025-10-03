@@ -216,18 +216,18 @@ export default function PassageManagementPage() {
       <div className="passage-management-container">
         <div className="passage-management-header">
           <div className="header-left">
-            <h1>📚 Passage Management</h1>
+            <h1><i className="fas fa-books"></i> Passage Management</h1>
             <p>Manage existing passages and their visibility to students</p>
           </div>
           <div className="header-actions">
             <button onClick={handleAddNewPassage} className="btn-primary">
-              + Add New Passage
+              <i className="fas fa-plus"></i> Add New Passage
             </button>
             <button onClick={handleBackToAdmin} className="btn-back">
-              ← Back to Admin
+              <i className="fas fa-arrow-left"></i> Back to Admin
             </button>
             <button onClick={handleSignOut} className="btn-secondary">
-              Sign Out
+              <i className="fas fa-sign-out-alt"></i> Sign Out
             </button>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default function PassageManagementPage() {
             </div>
           ) : filteredPassages.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">📖</div>
+              <div className="empty-icon"><i className="fas fa-book-open"></i></div>
               <h3>No passages found</h3>
               <p>
                 {passages.length === 0 

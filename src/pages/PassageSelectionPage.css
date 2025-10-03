@@ -221,6 +221,7 @@
 .empty-icon {
   font-size: 48px;
   margin-bottom: 16px;
+  color: var(--waypath-primary);
 }
 
 .empty-state h2 {

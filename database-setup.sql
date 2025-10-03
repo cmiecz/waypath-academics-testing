@@ -44,7 +44,17 @@ CREATE TABLE test_attempts (
   total_questions INTEGER NOT NULL,
   time_spent INTEGER NOT NULL DEFAULT 0,
   completed_at TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  -- ACT scoring fields
+  raw_score INTEGER,
+  scaled_score INTEGER,
+  percentile INTEGER,
+  -- Analytics fields
+  question_times JSONB DEFAULT '{}', -- questionId -> time in seconds
+  question_types JSONB DEFAULT '{}', -- questionId -> questionType
+  passage_type TEXT, -- PassageType enum
+  reading_time INTEGER, -- time spent reading passage in seconds
+  answering_time INTEGER -- time spent answering questions in seconds
 );
 
 -- Passages table (for admin-uploaded content)
@@ -57,7 +67,13 @@ CREATE TABLE passages (
   questions JSONB NOT NULL DEFAULT '[]',
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  -- Analytics fields
+  passage_type TEXT, -- PassageType enum
+  word_count INTEGER,
+  estimated_reading_time INTEGER, -- in seconds
+  topic TEXT,
+  genre TEXT
 );
 
 -- Create indexes for better query performance

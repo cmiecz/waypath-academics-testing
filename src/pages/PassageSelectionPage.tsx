@@ -189,7 +189,7 @@ export default function PassageSelectionPage() {
 
           {passages.length === 0 && !loading && (
             <div className="empty-state">
-              <div className="empty-icon">📚</div>
+              <div className="empty-icon"><i className="fas fa-books"></i></div>
               <h2>No Passages Available</h2>
               <p>No passages have been uploaded for {subject} yet.</p>
             </div>

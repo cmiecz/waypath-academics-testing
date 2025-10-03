@@ -190,6 +190,13 @@ export default function LoginPage() {
     <div className="login-page">
       <div className="login-container">
         <div className="login-header">
+          <div className="logo-waypath">
+            <div className="logo-icon">W</div>
+            <div className="logo-text">
+              <div className="logo-primary">WAYPATH</div>
+              <div className="logo-secondary">Academics</div>
+            </div>
+          </div>
           <h1>ACT Test Prep</h1>
           <p>
             {viewMode === 'signin' && 'Sign in to continue your practice'}
@@ -231,7 +238,7 @@ export default function LoginPage() {
             {error && <div className="error-message">{error}</div>}
             {successMessage && <div className="success-message">{successMessage}</div>}
 
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button type="submit" className="btn-waypath" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
 
@@ -266,7 +273,8 @@ export default function LoginPage() {
               <button 
                 type="button" 
                 onClick={handleTestingMode} 
-                className="btn-secondary"
+                className="btn-waypath"
+                style={{background: 'transparent', color: 'var(--waypath-secondary)', border: '2px solid var(--waypath-primary)'}}
                 disabled={loading}
               >
                 Testing Mode (Skip Login)
@@ -360,7 +368,7 @@ export default function LoginPage() {
             {error && <div className="error-message">{error}</div>}
             {successMessage && <div className="success-message">{successMessage}</div>}
 
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button type="submit" className="btn-waypath" disabled={loading}>
               {loading ? 'Creating Account...' : 'Create Account'}
             </button>
 
@@ -403,7 +411,7 @@ export default function LoginPage() {
             {error && <div className="error-message">{error}</div>}
             {successMessage && <div className="success-message">{successMessage}</div>}
 
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button type="submit" className="btn-waypath" disabled={loading}>
               {loading ? 'Sending...' : 'Send Reset Link'}
             </button>
 

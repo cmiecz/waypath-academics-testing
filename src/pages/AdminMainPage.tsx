@@ -87,6 +87,10 @@ export default function AdminMainPage() {
     navigate('/admin/test-history');
   };
 
+  const handleStudentManagement = () => {
+    navigate('/admin/student-management');
+  };
+
   const handleBackToApp = () => {
     navigate('/test-selection');
   };
@@ -96,15 +100,15 @@ export default function AdminMainPage() {
       <div className="admin-main-container">
         <div className="admin-main-header">
           <div className="header-left">
-            <h1>🔧 Admin Dashboard</h1>
+            <h1><i className="fas fa-cogs"></i> Admin Dashboard</h1>
             <p>Manage passages and view test analytics</p>
           </div>
           <div className="header-actions">
             <button onClick={handleBackToApp} className="btn-back">
-              ← Back to App
+              <i className="fas fa-arrow-left"></i> Back to App
             </button>
             <button onClick={handleSignOut} className="btn-secondary">
-              Sign Out
+              <i className="fas fa-sign-out-alt"></i> Sign Out
             </button>
           </div>
         </div>
@@ -112,30 +116,39 @@ export default function AdminMainPage() {
         <div className="admin-navigation">
           <div className="nav-cards">
             <div className="nav-card" onClick={handleAddPassage}>
-              <div className="nav-icon">➕</div>
+              <div className="nav-icon"><i className="fas fa-plus"></i></div>
               <div className="nav-content">
                 <h3>Add New Passage</h3>
                 <p>Upload new reading passages and questions</p>
               </div>
-              <div className="nav-arrow">→</div>
+              <div className="nav-arrow"><i className="fas fa-arrow-right"></i></div>
             </div>
 
             <div className="nav-card" onClick={handlePassageManagement}>
-              <div className="nav-icon">📚</div>
+              <div className="nav-icon"><i className="fas fa-books"></i></div>
               <div className="nav-content">
                 <h3>Passage Management</h3>
                 <p>View, edit, and manage passage visibility</p>
               </div>
-              <div className="nav-arrow">→</div>
+              <div className="nav-arrow"><i className="fas fa-arrow-right"></i></div>
             </div>
 
             <div className="nav-card" onClick={handleTestHistory}>
-              <div className="nav-icon">📊</div>
+              <div className="nav-icon"><i className="fas fa-chart-bar"></i></div>
               <div className="nav-content">
                 <h3>Test History Report</h3>
                 <p>View detailed analytics and student performance data</p>
               </div>
-              <div className="nav-arrow">→</div>
+              <div className="nav-arrow"><i className="fas fa-arrow-right"></i></div>
+            </div>
+
+            <div className="nav-card" onClick={handleStudentManagement}>
+              <div className="nav-icon"><i className="fas fa-users"></i></div>
+              <div className="nav-content">
+                <h3>Student Management</h3>
+                <p>Manage student accounts and delete student data</p>
+              </div>
+              <div className="nav-arrow"><i className="fas fa-arrow-right"></i></div>
             </div>
           </div>
         </div>
@@ -143,7 +156,7 @@ export default function AdminMainPage() {
         <div className="admin-stats">
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-icon">📖</div>
+              <div className="stat-icon"><i className="fas fa-book-open"></i></div>
               <div className="stat-content">
                 <div className="stat-value">
                   {loading ? '...' : stats.totalPassages.toLocaleString()}
@@ -152,7 +165,7 @@ export default function AdminMainPage() {
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon">👥</div>
+              <div className="stat-icon"><i className="fas fa-users"></i></div>
               <div className="stat-content">
                 <div className="stat-value">
                   {loading ? '...' : stats.activeStudents.toLocaleString()}
@@ -161,7 +174,7 @@ export default function AdminMainPage() {
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon">📝</div>
+              <div className="stat-icon"><i className="fas fa-clipboard-check"></i></div>
               <div className="stat-content">
                 <div className="stat-value">
                   {loading ? '...' : stats.testsCompleted.toLocaleString()}
@@ -170,7 +183,7 @@ export default function AdminMainPage() {
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon">⭐</div>
+              <div className="stat-icon"><i className="fas fa-star"></i></div>
               <div className="stat-content">
                 <div className="stat-value">
                   {loading ? '...' : `${stats.avgScore}%`}

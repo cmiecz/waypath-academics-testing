@@ -25,9 +25,14 @@
 .header-left h1 {
   font-size: 42px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--waypath-secondary);
   margin: 0 0 8px 0;
   letter-spacing: -1px;
+}
+
+.header-left h1 i {
+  color: var(--waypath-primary);
+  margin-right: 12px;
 }
 
 .header-left p {
@@ -121,6 +126,7 @@
 .empty-icon {
   font-size: 64px;
   margin-bottom: 24px;
+  color: var(--waypath-primary);
 }
 
 .empty-state h2 {

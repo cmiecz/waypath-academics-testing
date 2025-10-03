@@ -229,15 +229,15 @@ export default function TestHistoryReportPage() {
       <div className="test-history-container">
         <div className="test-history-header">
           <div className="header-left">
-            <h1>📊 Test History Report</h1>
+            <h1><i className="fas fa-chart-bar"></i> Test History Report</h1>
             <p>Detailed analytics and student performance data</p>
           </div>
           <div className="header-actions">
             <button onClick={handleBackToAdmin} className="btn-back">
-              ← Back to Admin
+              <i className="fas fa-arrow-left"></i> Back to Admin
             </button>
             <button onClick={handleSignOut} className="btn-secondary">
-              Sign Out
+              <i className="fas fa-sign-out-alt"></i> Sign Out
             </button>
           </div>
         </div>
@@ -245,7 +245,7 @@ export default function TestHistoryReportPage() {
         <div className="report-content">
           {Object.keys(groupedData).length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">📊</div>
+              <div className="empty-icon"><i className="fas fa-chart-bar"></i></div>
               <h2>No Test Data Available</h2>
               <p>No test attempts have been recorded yet.</p>
             </div>

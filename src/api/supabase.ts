@@ -43,7 +43,13 @@ export const saveTestResult = async (attempt: TestAttempt) => {
       // ACT scoring fields
       raw_score: attempt.rawScore,
       scaled_score: attempt.scaledScore,
-      percentile: attempt.percentile
+      percentile: attempt.percentile,
+      // Analytics fields
+      question_times: attempt.questionTimes || {},
+      question_types: attempt.questionTypes || {},
+      passage_type: attempt.passageType,
+      reading_time: attempt.readingTime,
+      answering_time: attempt.answeringTime
     };
     console.log('Saving test attempt to database:', dbAttempt);
     const result = await supabase.from('test_attempts').insert([dbAttempt]);
