@@ -122,7 +122,7 @@ export default function TestSelectionPage() {
 
         <div className="subjects-grid">
           <div className="subject-card available" onClick={() => handleSubjectSelect('English')}>
-            <div className="subject-icon"><i className="fas fa-books"></i></div>
+            <div className="subject-icon">📚</div>
             <h3>English</h3>
             <p>Grammar, punctuation, and rhetorical skills</p>
             <div className="subject-badge">Available</div>
