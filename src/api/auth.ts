@@ -252,8 +252,15 @@ export const createUserProfile = async (
   grade: number
 ): Promise<AuthResponse> => {
   try {
+    // Check if user with this email already exists
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single();
+
     const user: User = {
-      id: userId,
+      id: existingUser?.id || userId, // Use existing ID if user exists
       name,
       email,
       grade,

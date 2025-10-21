@@ -31,13 +31,34 @@ export default function MagicLinkCallbackPage() {
         }
 
         // Got a valid session! Now check if user profile exists
-        const { data: userData, error: dbError } = await supabase
+        // Try to find by email first (in case user has multiple auth accounts)
+        let userData = null;
+        let dbError = null;
+        
+        const emailResult = await supabase
           .from('users')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('email', session.user.email)
           .single();
+        
+        if (!emailResult.error) {
+          userData = emailResult.data;
+        } else {
+          // Try by ID as fallback
+          const idResult = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          if (!idResult.error) {
+            userData = idResult.data;
+          } else if (idResult.error.code !== 'PGRST116') {
+            dbError = idResult.error;
+          }
+        }
 
-        if (dbError && dbError.code !== 'PGRST116') {
+        if (dbError) {
           console.error('Database error:', dbError);
           setError('Failed to load user profile. Please try again.');
           setLoading(false);
@@ -62,18 +83,24 @@ export default function MagicLinkCallbackPage() {
           
           if (userMetadata?.name && userMetadata?.grade) {
             // User signed up with name/grade - create profile automatically
-            // Use upsert to handle case where user already exists
+            // First check if email already exists
+            const { data: existingUser } = await supabase
+              .from('users')
+              .select('id')
+              .eq('email', session.user.email)
+              .single();
+
             const { error: createError } = await supabase
               .from('users')
               .upsert({
-                id: session.user.id,
+                id: existingUser?.id || session.user.id, // Use existing ID if user exists
                 name: userMetadata.name,
                 email: session.user.email,
                 grade: userMetadata.grade,
                 registered_at: new Date().toISOString()
               }, {
-                onConflict: 'id', // Update if user already exists
-                ignoreDuplicates: false // Always update the record
+                onConflict: 'id',
+                ignoreDuplicates: false
               });
 
             if (createError) {
