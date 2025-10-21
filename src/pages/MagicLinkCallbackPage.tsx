@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTestStore } from '../hooks/useTestStore';
-import { handleMagicLinkCallback } from '../api/auth';
+import { supabase } from '../api/supabase';
 import './LoginPage.css';
 
 export default function MagicLinkCallbackPage() {
-  const [searchParams] = useSearchParams();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const { setUser } = useTestStore();
@@ -14,32 +13,61 @@ export default function MagicLinkCallbackPage() {
   useEffect(() => {
     const verifyMagicLink = async () => {
       try {
-        const tokenHash = searchParams.get('token_hash');
-        const type = searchParams.get('type');
+        // Supabase automatically handles the magic link from the URL hash
+        // We just need to check if there's a session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-        if (!tokenHash || !type) {
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          setError('Failed to verify magic link. Please try again.');
+          setLoading(false);
+          return;
+        }
+
+        if (!session || !session.user) {
           setError('Invalid magic link. Please request a new one.');
           setLoading(false);
           return;
         }
 
-        const result = await handleMagicLinkCallback(tokenHash, type);
+        // Got a valid session! Now check if user profile exists
+        const { data: userData, error: dbError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
 
-        if (result.success && result.user) {
-          setUser(result.user);
-
-          // Check if user needs to complete profile
-          if (!result.user.name || result.user.name === '') {
-            // New user - redirect to profile completion
-            navigate('/complete-profile');
-          } else {
-            // Existing user - redirect to test selection
-            navigate('/test-selection');
-          }
-        } else {
-          setError(result.error || 'Verification failed');
+        if (dbError && dbError.code !== 'PGRST116') {
+          console.error('Database error:', dbError);
+          setError('Failed to load user profile. Please try again.');
           setLoading(false);
+          return;
         }
+
+        // Create user object
+        const user = userData ? {
+          id: userData.id,
+          name: userData.name,
+          email: userData.email,
+          grade: userData.grade,
+          registeredAt: userData.registered_at
+        } : {
+          id: session.user.id,
+          email: session.user.email || '',
+          name: '',
+          grade: 11,
+          registeredAt: new Date().toISOString()
+        };
+
+        setUser(user);
+
+        // Route based on profile completion
+        if (!user.name || user.name === '') {
+          navigate('/complete-profile');
+        } else {
+          navigate('/test-selection');
+        }
+
       } catch (err: any) {
         console.error('Magic link verification error:', err);
         setError('An error occurred during verification');
@@ -48,7 +76,7 @@ export default function MagicLinkCallbackPage() {
     };
 
     verifyMagicLink();
-  }, [searchParams, setUser, navigate]);
+  }, [setUser, navigate]);
 
   return (
     <div className="login-page">
