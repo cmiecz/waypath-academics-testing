@@ -62,14 +62,18 @@ export default function MagicLinkCallbackPage() {
           
           if (userMetadata?.name && userMetadata?.grade) {
             // User signed up with name/grade - create profile automatically
+            // Use upsert to handle case where user already exists
             const { error: createError } = await supabase
               .from('users')
-              .insert({
+              .upsert({
                 id: session.user.id,
                 name: userMetadata.name,
                 email: session.user.email,
                 grade: userMetadata.grade,
                 registered_at: new Date().toISOString()
+              }, {
+                onConflict: 'id', // Update if user already exists
+                ignoreDuplicates: false // Always update the record
               });
 
             if (createError) {

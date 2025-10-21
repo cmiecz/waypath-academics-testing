@@ -260,14 +260,18 @@ export const createUserProfile = async (
       registeredAt: new Date().toISOString()
     };
 
+    // Use upsert to handle case where user already exists
     const { error: dbError } = await supabase
       .from('users')
-      .insert({
+      .upsert({
         id: user.id,
         name: user.name,
         email: user.email,
         grade: user.grade,
         registered_at: user.registeredAt
+      }, {
+        onConflict: 'id',
+        ignoreDuplicates: false
       });
 
     if (dbError) {
