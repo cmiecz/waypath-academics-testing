@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in to WayPath ACT Prep</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      background-color: #F8F9FA;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #2D5A8C 0%, #1E3A5F 100%);
+      padding: 40px 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #ffffff;
+      color: #2D5A8C;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'Georgia', serif;
+    }
+    
+    .logo-text {
+      text-align: left;
+    }
+    
+    .logo-primary {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+    }
+    
+    .logo-secondary {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      color: #E8EFF5;
+      text-transform: uppercase;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 0;
+      color: #ffffff;
+    }
+    
+    .content {
+      padding: 40px 30px;
+    }
+    
+    .content h2 {
+      color: #2D5A8C;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    
+    .content p {
+      color: #333333;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .magic-link-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #4A90E2 0%, #2D5A8C 100%);
+      color: #ffffff;
+      padding: 16px 32px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 20px 0;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(45, 90, 140, 0.3);
+    }
+    
+    .magic-link-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(45, 90, 140, 0.4);
+    }
+    
+    .expiry-note {
+      font-size: 14px;
+      color: #666666;
+      font-style: italic;
+      margin-top: 10px;
+    }
+    
+    .divider {
+      text-align: center;
+      margin: 30px 0;
+      position: relative;
+      color: #999999;
+      font-size: 14px;
+    }
+    
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 45%;
+      height: 1px;
+      background-color: #E0E0E0;
+    }
+    
+    .divider::before {
+      left: 0;
+    }
+    
+    .divider::after {
+      right: 0;
+    }
+    
+    .link-box {
+      background-color: #F8F9FA;
+      border: 1px solid #E0E0E0;
+      border-radius: 6px;
+      padding: 15px;
+      word-break: break-all;
+      color: #4A90E2;
+      font-size: 13px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .footer {
+      background-color: #F8F9FA;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #E0E0E0;
+    }
+    
+    .footer p {
+      color: #666666;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    
+    .footer p:first-child {
+      font-weight: 600;
+      color: #2D5A8C;
+    }
+    
+    .security-note {
+      background-color: #FFF9E6;
+      border-left: 4px solid #FFC107;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .security-note p {
+      margin: 0;
+      font-size: 14px;
+      color: #856404;
+    }
+    
+    @media only screen and (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      
+      .header,
+      .content,
+      .footer {
+        padding: 20px 15px;
+      }
+      
+      .header h1 {
+        font-size: 22px;
+      }
+      
+      .content h2 {
+        font-size: 20px;
+      }
+      
+      .magic-link-button {
+        padding: 14px 24px;
+        font-size: 16px;
+        display: block;
+        text-align: center;
+      }
+      
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+      }
+      
+      .logo-primary {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <!-- Header with WayPath Branding -->
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">W</div>
+        <div class="logo-text">
+          <div class="logo-primary">WAYPATH</div>
+          <div class="logo-secondary">Academics</div>
+        </div>
+      </div>
+      <h1>ACT Test Prep</h1>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="content">
+      <h2>Your Sign-In Link is Ready! 🎉</h2>
+      
+      <p>Hello!</p>
+      
+      <p>Click the button below to instantly sign in to your ACT Test Prep account. No password required!</p>
+      
+      <p style="text-align: center;">
+        <a href="{{ .ConfirmationURL }}" class="magic-link-button">
+          Sign In to ACT Prep
+        </a>
+      </p>
+      
+      <p class="expiry-note">⏱️ This link will expire in 1 hour for security reasons.</p>
+      
+      <div class="divider">or</div>
+      
+      <p style="font-size: 14px; color: #666;">If the button doesn't work, copy and paste this link into your browser:</p>
+      <div class="link-box">{{ .ConfirmationURL }}</div>
+      
+      <div class="security-note">
+        <p><strong>🔒 Security Tip:</strong> If you didn't request this sign-in link, you can safely ignore this email. The link will expire automatically.</p>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p>WayPath Academics - ACT Test Prep Platform</p>
+      <p>Empowering students to achieve their best scores</p>
+      <p style="margin-top: 15px; font-size: 12px; color: #999999;">
+        This is an automated email. Please do not reply directly to this message.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+

@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
+import MagicLinkCallbackPage from './pages/MagicLinkCallbackPage';
+import ProfileCompletionPage from './pages/ProfileCompletionPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import TestSelectionPage from './pages/TestSelectionPage';
@@ -22,6 +24,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/auth/callback" element={<MagicLinkCallbackPage />} />
+        <Route path="/complete-profile" element={<ProfileCompletionPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<AnalyticsPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />

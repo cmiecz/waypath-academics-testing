@@ -140,7 +140,145 @@ export const signOut = async (): Promise<{ success: boolean; error?: string }> =
 };
 
 /**
- * Send password reset email
+ * Send magic link for passwordless authentication
+ */
+export const signInWithMagicLink = async (
+  email: string
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    // Determine redirect URL based on environment
+    const isDevelopment = window.location.hostname === 'localhost';
+    const redirectUrl = isDevelopment 
+      ? 'http://localhost:3000/auth/callback'
+      : 'https://act-prep-web.vercel.app/auth/callback';
+    
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: redirectUrl,
+        shouldCreateUser: true // Auto-create users on first login
+      }
+    });
+
+    if (error) {
+      console.error('Magic link error:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Magic link error:', error);
+    return { success: false, error: error.message || 'Failed to send magic link' };
+  }
+};
+
+/**
+ * Handle magic link callback and verify OTP
+ */
+export const handleMagicLinkCallback = async (
+  tokenHash: string,
+  type: string
+): Promise<AuthResponse> => {
+  try {
+    const { data, error } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: type as any
+    });
+
+    if (error) {
+      console.error('Magic link verification error:', error);
+      return { success: false, error: error.message };
+    }
+
+    if (!data.user) {
+      return { success: false, error: 'Verification failed' };
+    }
+
+    // Check if user profile exists in database
+    const { data: userData, error: dbError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', data.user.id)
+      .single();
+
+    if (dbError && dbError.code !== 'PGRST116') {
+      // PGRST116 means no rows found, which is ok for new users
+      console.error('Database user fetch error:', dbError);
+      return { success: false, error: 'Failed to load user profile' };
+    }
+
+    if (!userData) {
+      // New user - needs to complete profile
+      return { 
+        success: true, 
+        user: {
+          id: data.user.id,
+          email: data.user.email || '',
+          name: '',
+          grade: 11,
+          registeredAt: new Date().toISOString()
+        }
+      };
+    }
+
+    // Existing user
+    const user: User = {
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      grade: userData.grade,
+      registeredAt: userData.registered_at
+    };
+
+    return { success: true, user };
+  } catch (error: any) {
+    console.error('Magic link callback error:', error);
+    return { success: false, error: error.message || 'Verification failed' };
+  }
+};
+
+/**
+ * Create user profile after magic link sign-in (for new users)
+ */
+export const createUserProfile = async (
+  userId: string,
+  name: string,
+  email: string,
+  grade: number
+): Promise<AuthResponse> => {
+  try {
+    const user: User = {
+      id: userId,
+      name,
+      email,
+      grade,
+      registeredAt: new Date().toISOString()
+    };
+
+    const { error: dbError } = await supabase
+      .from('users')
+      .insert({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        grade: user.grade,
+        registered_at: user.registeredAt
+      });
+
+    if (dbError) {
+      console.error('Database user creation error:', dbError);
+      return { success: false, error: 'Failed to create user profile' };
+    }
+
+    return { success: true, user };
+  } catch (error: any) {
+    console.error('Profile creation error:', error);
+    return { success: false, error: error.message || 'Profile creation failed' };
+  }
+};
+
+/**
+ * Send password reset email (kept for backward compatibility)
  */
 export const sendPasswordResetEmail = async (
   email: string
