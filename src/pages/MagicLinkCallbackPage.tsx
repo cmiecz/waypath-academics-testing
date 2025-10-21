@@ -44,28 +44,64 @@ export default function MagicLinkCallbackPage() {
           return;
         }
 
-        // Create user object
-        const user = userData ? {
-          id: userData.id,
-          name: userData.name,
-          email: userData.email,
-          grade: userData.grade,
-          registeredAt: userData.registered_at
-        } : {
-          id: session.user.id,
-          email: session.user.email || '',
-          name: '',
-          grade: 11,
-          registeredAt: new Date().toISOString()
-        };
-
-        setUser(user);
-
-        // Route based on profile completion
-        if (!user.name || user.name === '') {
-          navigate('/complete-profile');
-        } else {
+        // Check if profile exists in database
+        if (userData) {
+          // Existing user - load from database
+          const user = {
+            id: userData.id,
+            name: userData.name,
+            email: userData.email,
+            grade: userData.grade,
+            registeredAt: userData.registered_at
+          };
+          setUser(user);
           navigate('/test-selection');
+        } else {
+          // New user - check if we have user_metadata from sign up
+          const userMetadata = session.user.user_metadata;
+          
+          if (userMetadata?.name && userMetadata?.grade) {
+            // User signed up with name/grade - create profile automatically
+            const { error: createError } = await supabase
+              .from('users')
+              .insert({
+                id: session.user.id,
+                name: userMetadata.name,
+                email: session.user.email,
+                grade: userMetadata.grade,
+                registered_at: new Date().toISOString()
+              });
+
+            if (createError) {
+              console.error('Failed to create profile:', createError);
+              setError('Failed to create your account. Please try again.');
+              setLoading(false);
+              return;
+            }
+
+            // Set user and redirect to test selection
+            const newUser = {
+              id: session.user.id,
+              email: session.user.email || '',
+              name: userMetadata.name,
+              grade: userMetadata.grade,
+              registeredAt: new Date().toISOString()
+            };
+            setUser(newUser);
+            navigate('/test-selection');
+          } else {
+            // Old flow: User signed in without providing name/grade
+            // Redirect to profile completion
+            const partialUser = {
+              id: session.user.id,
+              email: session.user.email || '',
+              name: '',
+              grade: 11,
+              registeredAt: new Date().toISOString()
+            };
+            setUser(partialUser);
+            navigate('/complete-profile');
+          }
         }
 
       } catch (err: any) {

@@ -143,7 +143,8 @@ export const signOut = async (): Promise<{ success: boolean; error?: string }> =
  * Send magic link for passwordless authentication
  */
 export const signInWithMagicLink = async (
-  email: string
+  email: string,
+  userData?: { name: string; grade: number }
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     // Determine redirect URL based on environment
@@ -156,7 +157,11 @@ export const signInWithMagicLink = async (
       email,
       options: {
         emailRedirectTo: redirectUrl,
-        shouldCreateUser: true // Auto-create users on first login
+        shouldCreateUser: true, // Auto-create users on first login
+        data: userData ? {
+          name: userData.name,
+          grade: userData.grade
+        } : undefined
       }
     });
 

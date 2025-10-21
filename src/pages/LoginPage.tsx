@@ -4,11 +4,13 @@ import { useTestStore } from '../hooks/useTestStore';
 import { signInWithMagicLink } from '../api/auth';
 import './LoginPage.css';
 
-type ViewMode = 'magic-link' | 'admin-login';
+type ViewMode = 'magic-link' | 'signup' | 'admin-login';
 
 export default function LoginPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('magic-link');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [grade, setGrade] = useState<number>(11);
   const [adminUsername, setAdminUsername] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,6 +43,39 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error('Magic link error:', err);
+      setError('Failed to send magic link. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!name.trim() || !email.trim()) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      // Send magic link with user metadata for new user registration
+      const result = await signInWithMagicLink(email.trim(), { name: name.trim(), grade });
+      
+      if (result.success) {
+        setSuccessMessage('Check your email for your magic link! 🎉');
+        // Clear form
+        setEmail('');
+        setName('');
+        setGrade(11);
+      } else {
+        setError(result.error || 'Failed to send magic link');
+      }
+    } catch (err: any) {
+      console.error('Sign up error:', err);
       setError('Failed to send magic link. Please try again.');
     } finally {
       setLoading(false);
@@ -102,6 +137,9 @@ export default function LoginPage() {
   const resetForm = () => {
     setError('');
     setSuccessMessage('');
+    setEmail('');
+    setName('');
+    setGrade(11);
     setAdminUsername('');
     setAdminPassword('');
   };
@@ -120,11 +158,12 @@ export default function LoginPage() {
           <h1>ACT Test Prep</h1>
           <p>
             {viewMode === 'magic-link' && 'Sign in with your email - no password needed!'}
+            {viewMode === 'signup' && 'Create your account - no password needed!'}
             {viewMode === 'admin-login' && 'Admin access required'}
           </p>
         </div>
 
-        {/* Magic Link Form */}
+        {/* Magic Link Sign In Form */}
         {viewMode === 'magic-link' && (
           <form onSubmit={handleMagicLink} className="login-form">
             <div className="form-group">
@@ -152,6 +191,20 @@ export default function LoginPage() {
               {loading ? 'Sending Magic Link...' : 'Send Magic Link'}
             </button>
 
+            <div className="form-links">
+              <button
+                type="button"
+                onClick={() => {
+                  setViewMode('signup');
+                  resetForm();
+                }}
+                className="link-button"
+                disabled={loading}
+              >
+                New here? Create Account
+              </button>
+            </div>
+
             <div className="divider">or</div>
 
             <div className="quick-access-buttons">
@@ -175,6 +228,78 @@ export default function LoginPage() {
                 disabled={loading}
               >
                 ⚙️ Admin Access
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Sign Up Form */}
+        {viewMode === 'signup' && (
+          <form onSubmit={handleSignUp} className="login-form">
+            <div className="form-group">
+              <label htmlFor="name">Full Name</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your full name"
+                disabled={loading}
+                autoComplete="name"
+                autoFocus
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email Address</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                disabled={loading}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="grade">Grade Level</label>
+              <select
+                id="grade"
+                value={grade}
+                onChange={(e) => setGrade(Number(e.target.value))}
+                disabled={loading}
+              >
+                <option value={9}>9th Grade</option>
+                <option value={10}>10th Grade</option>
+                <option value={11}>11th Grade</option>
+                <option value={12}>12th Grade</option>
+              </select>
+            </div>
+
+            <p className="help-text" style={{ fontSize: '0.9rem', color: '#666', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+              We'll send you a magic link to complete your sign up
+            </p>
+
+            {error && <div className="error-message">{error}</div>}
+            {successMessage && <div className="success-message">{successMessage}</div>}
+
+            <button type="submit" className="btn-waypath" disabled={loading}>
+              {loading ? 'Sending Magic Link...' : 'Create Account'}
+            </button>
+
+            <div className="form-links">
+              <button
+                type="button"
+                onClick={() => {
+                  setViewMode('magic-link');
+                  resetForm();
+                }}
+                className="link-button"
+                disabled={loading}
+              >
+                Already have an account? Sign In
               </button>
             </div>
           </form>
