@@ -10,17 +10,17 @@ export default function ProfileCompletionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { user, setUser } = useTestStore();
+  const { currentUser, setUser } = useTestStore();
   const navigate = useNavigate();
 
   // Redirect if no user or user already has profile
   React.useEffect(() => {
-    if (!user) {
+    if (!currentUser) {
       navigate('/');
-    } else if (user.name && user.name !== '') {
+    } else if (currentUser.name && currentUser.name !== '') {
       navigate('/test-selection');
     }
-  }, [user, navigate]);
+  }, [currentUser, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +30,7 @@ export default function ProfileCompletionPage() {
       return;
     }
 
-    if (!user?.id || !user?.email) {
+    if (!currentUser?.id || !currentUser?.email) {
       setError('Invalid user session');
       return;
     }
@@ -40,9 +40,9 @@ export default function ProfileCompletionPage() {
 
     try {
       const result = await createUserProfile(
-        user.id,
+        currentUser.id,
         name.trim(),
-        user.email,
+        currentUser.email,
         grade
       );
 
@@ -60,7 +60,7 @@ export default function ProfileCompletionPage() {
     }
   };
 
-  if (!user) {
+  if (!currentUser) {
     return null;
   }
 
@@ -117,7 +117,7 @@ export default function ProfileCompletionPage() {
 
           <div className="form-links">
             <p style={{ textAlign: 'center', color: '#666', fontSize: '0.9rem' }}>
-              Signed in as <strong>{user.email}</strong>
+              Signed in as <strong>{currentUser.email}</strong>
             </p>
           </div>
         </form>
