@@ -82,19 +82,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleTestingMode = () => {
-    const testUser = {
-      id: 'test_user',
-      name: 'Test User',
-      email: 'test@example.com',
-      grade: 11,
-      registeredAt: new Date().toISOString()
-    };
-    
-    setUser(testUser);
-    navigate('/test-selection');
-  };
-
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -208,16 +195,6 @@ export default function LoginPage() {
             <div className="divider">or</div>
 
             <div className="quick-access-buttons">
-              <button 
-                type="button" 
-                onClick={handleTestingMode} 
-                className="btn-waypath"
-                style={{background: 'transparent', color: 'var(--waypath-secondary)', border: '2px solid var(--waypath-primary)'}}
-                disabled={loading}
-              >
-                Testing Mode (Skip Login)
-              </button>
-              
               <button 
                 type="button" 
                 onClick={() => {
