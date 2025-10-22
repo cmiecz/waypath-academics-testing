@@ -47,7 +47,7 @@ class Store {
     this.notifyListeners();
   }
 
-  startTestSession(subject: 'English' | 'Math' | 'Reading' | 'Science'): TestSession {
+  startTestSession(subject: 'English' | 'Math' | 'Reading' | 'Science', difficultyFilter?: 'all' | 'Easy' | 'Medium' | 'Hard'): TestSession {
     if (!this.state.currentUser) {
       throw new Error('No user logged in');
     }
@@ -58,7 +58,8 @@ class Store {
       subject,
       startTime: new Date().toISOString(),
       currentPassageIndex: 0,
-      completed: false
+      completed: false,
+      difficultyFilter: difficultyFilter || 'all'
     };
 
     this.state = { ...this.state, currentSession: session, sessionTime: 2100, timerRunning: true };

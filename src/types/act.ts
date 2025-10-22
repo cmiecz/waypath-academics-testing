@@ -105,6 +105,7 @@ export interface TestSession {
   startTime: string;
   endTime?: string;
   completed: boolean;
+  difficultyFilter?: 'all' | 'Easy' | 'Medium' | 'Hard';
 }
 
 export interface TestState {
@@ -124,6 +125,7 @@ export interface PerformanceAnalytics {
   overall: OverallPerformance;
   questionTypes: QuestionTypePerformance[];
   passageTypes: PassageTypePerformance[];
+  difficultyLevels: DifficultyPerformance[];
   timeAnalysis: TimeAnalysis;
   progress: ProgressTracking;
   weaknesses: WeaknessAnalysis;
@@ -153,6 +155,15 @@ export interface PassageTypePerformance {
   averageScore: number;
   averageTime: number;
   accuracy: number;
+  trend: 'improving' | 'declining' | 'stable';
+}
+
+export interface DifficultyPerformance {
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  totalQuestions: number;
+  correctAnswers: number;
+  accuracy: number;
+  averageTime: number;
   trend: 'improving' | 'declining' | 'stable';
 }
 

@@ -27,7 +27,9 @@ export const mockPassages: Passage[] = [
               D: 'Occasionally'
             },
             correctAnswer: 'A',
-            explanation: '"For now" signals a temporary emotional shift that fits the context.'
+            explanation: '"For now" signals a temporary emotional shift that fits the context.',
+            difficulty: 'Hard',
+            questionType: 'structure'
           },
           {
             id: 'q2',
@@ -40,7 +42,9 @@ export const mockPassages: Passage[] = [
               D: 'who\'s'
             },
             correctAnswer: 'A',
-            explanation: '"Whose" is the correct possessive pronoun to describe the children\'s eyes.'
+            explanation: '"Whose" is the correct possessive pronoun to describe the children\'s eyes.',
+            difficulty: 'Easy',
+            questionType: 'vocabulary'
           },
           {
             id: 'q3',
@@ -53,7 +57,9 @@ export const mockPassages: Passage[] = [
               D: 'faded'
             },
             correctAnswer: 'D',
-            explanation: '"Faded" matches the past tense of "slowed" and maintains consistency.'
+            explanation: '"Faded" matches the past tense of "slowed" and maintains consistency.',
+            difficulty: 'Easy',
+            questionType: 'structure'
           },
           {
             id: 'q4',
@@ -66,7 +72,9 @@ export const mockPassages: Passage[] = [
               D: 'arid'
             },
             correctAnswer: 'D',
-            explanation: '"Arid" already means dry, so "dry and arid" is redundant.'
+            explanation: '"Arid" already means dry, so "dry and arid" is redundant.',
+            difficulty: 'Medium',
+            questionType: 'detail'
           },
           {
             id: 'q5',
@@ -79,7 +87,9 @@ export const mockPassages: Passage[] = [
               D: 'Gliding effortlessly in a perfect V-formation, the birds crossed the sky.'
             },
             correctAnswer: 'D',
-            explanation: 'Modifier is placed clearly and elegantly before the subject.'
+            explanation: 'Modifier is placed clearly and elegantly before the subject.',
+            difficulty: 'Medium',
+            questionType: 'structure'
           },
           {
             id: 'q6',
@@ -92,7 +102,9 @@ export const mockPassages: Passage[] = [
               D: 'fall over'
             },
             correctAnswer: 'A',
-            explanation: '"Sink in" is the correct idiom for emotionally absorbing a moment.'
+            explanation: '"Sink in" is the correct idiom for emotionally absorbing a moment.',
+            difficulty: 'Hard',
+            questionType: 'vocabulary'
           },
           {
             id: 'q7',
@@ -105,7 +117,9 @@ export const mockPassages: Passage[] = [
               D: 'feel the sand beneath my feet'
             },
             correctAnswer: 'A',
-            explanation: 'Maintains parallel structure with "listened," "watched," and "felt."'
+            explanation: 'Maintains parallel structure with "listened," "watched," and "felt."',
+            difficulty: 'Easy',
+            questionType: 'structure'
           },
           {
             id: 'q8',
@@ -118,7 +132,9 @@ export const mockPassages: Passage[] = [
               D: 'morning'
             },
             correctAnswer: 'A',
-            explanation: '"Morning\'s" correctly shows possession.'
+            explanation: '"Morning\'s" correctly shows possession.',
+            difficulty: 'Easy',
+            questionType: 'detail'
           },
           {
             id: 'q9',
@@ -131,7 +147,9 @@ export const mockPassages: Passage[] = [
               D: 'warm quiet, and welcoming'
             },
             correctAnswer: 'A',
-            explanation: 'Correct comma usage in a series of adjectives.'
+            explanation: 'Correct comma usage in a series of adjectives.',
+            difficulty: 'Easy',
+            questionType: 'detail'
           },
           {
             id: 'q10',
@@ -144,7 +162,9 @@ export const mockPassages: Passage[] = [
               D: 'hidden behind the other books and not visible'
             },
             correctAnswer: 'A',
-            explanation: '"Tucked out of sight" is concise and vivid.'
+            explanation: '"Tucked out of sight" is concise and vivid.',
+            difficulty: 'Medium',
+            questionType: 'detail'
           },
           {
             id: 'q11',
@@ -157,7 +177,9 @@ export const mockPassages: Passage[] = [
               D: 'librarian'
             },
             correctAnswer: 'A',
-            explanation: '"Librarian\'s" correctly shows possession.'
+            explanation: '"Librarian\'s" correctly shows possession.',
+            difficulty: 'Easy',
+            questionType: 'detail'
           },
           {
             id: 'q12',
@@ -170,7 +192,9 @@ export const mockPassages: Passage[] = [
               D: 'I read the first chapter and it was intriguing and mysterious.'
             },
             correctAnswer: 'C',
-            explanation: 'Correct use of semicolon to join two independent clauses.'
+            explanation: 'Correct use of semicolon to join two independent clauses.',
+            difficulty: 'Medium',
+            questionType: 'structure'
           },
           {
             id: 'q13',
@@ -183,7 +207,9 @@ export const mockPassages: Passage[] = [
               D: 'distraction'
             },
             correctAnswer: 'A',
-            explanation: '"Calm" fits the peaceful, reflective tone of the passage.'
+            explanation: '"Calm" fits the peaceful, reflective tone of the passage.',
+            difficulty: 'Hard',
+            questionType: 'tone'
           },
           {
             id: 'q14',
@@ -196,7 +222,9 @@ export const mockPassages: Passage[] = [
               D: 'tall above me'
             },
             correctAnswer: 'C',
-            explanation: '"Towering above me" is concise and avoids redundancy.'
+            explanation: '"Towering above me" is concise and avoids redundancy.',
+            difficulty: 'Medium',
+            questionType: 'detail'
           },
           {
             id: 'q15',
@@ -209,7 +237,9 @@ export const mockPassages: Passage[] = [
               D: 'are filling'
             },
             correctAnswer: 'A',
-            explanation: '"Sound" is singular, so "fills" is correct.'
+            explanation: '"Sound" is singular, so "fills" is correct.',
+            difficulty: 'Easy',
+            questionType: 'structure'
           },
           {
             id: 'q16',
@@ -222,7 +252,9 @@ export const mockPassages: Passage[] = [
               D: 'In contrast'
             },
             correctAnswer: 'A',
-            explanation: '"Consequently" clearly shows cause and effect.'
+            explanation: '"Consequently" clearly shows cause and effect.',
+            difficulty: 'Hard',
+            questionType: 'structure'
           }
         ]
       },
@@ -254,7 +286,9 @@ export const mockPassages: Passage[] = [
               D: 'Even though the city\'s constant motion'
             },
             correctAnswer: 'B',
-            explanation: '"Despite of" is incorrect; "Despite" is the correct preposition.'
+            explanation: '"Despite of" is incorrect; "Despite" is the correct preposition.',
+            difficulty: 'Easy',
+            questionType: 'detail'
           },
           {
             id: 'q18',
@@ -267,7 +301,9 @@ export const mockPassages: Passage[] = [
               D: 'was almost empty'
             },
             correctAnswer: 'B',
-            explanation: '"Streets" is plural, so the verb must be "were."'
+            explanation: '"Streets" is plural, so the verb must be "were."',
+            difficulty: 'Easy',
+            questionType: 'structure'
           },
           {
             id: 'q19',
@@ -280,7 +316,9 @@ export const mockPassages: Passage[] = [
               D: 'The sun had begun to rise as I turned the corner'
             },
             correctAnswer: 'B',
-            explanation: 'The modifier "Turning the corner" must refer to the narrator, not the sun.'
+            explanation: 'The modifier "Turning the corner" must refer to the narrator, not the sun.',
+            difficulty: 'Medium',
+            questionType: 'structure'
           },
           {
             id: 'q20',
@@ -293,7 +331,9 @@ export const mockPassages: Passage[] = [
               D: 'The library, visited often as a child by me, stood quietly at the end of the block.'
             },
             correctAnswer: 'A',
-            explanation: 'Option A is the clearest and most natural phrasing.'
+            explanation: 'Option A is the clearest and most natural phrasing.',
+            difficulty: 'Hard',
+            questionType: 'structure'
           },
           {
             id: 'q21',
@@ -306,7 +346,9 @@ export const mockPassages: Passage[] = [
               D: 'their covers faded and pages wearing'
             },
             correctAnswer: 'C',
-            explanation: '"Their covers faded and their pages worn" maintains parallel structure.'
+            explanation: '"Their covers faded and their pages worn" maintains parallel structure.',
+            difficulty: 'Easy',
+            questionType: 'structure'
           },
           {
             id: 'q22',
@@ -319,7 +361,9 @@ export const mockPassages: Passage[] = [
               D: 'I sat at a table near the window, opening a novel and beginning to read.'
             },
             correctAnswer: 'B',
-            explanation: '"Opened" and "began" are parallel past-tense verbs.'
+            explanation: '"Opened" and "began" are parallel past-tense verbs.',
+            difficulty: 'Medium',
+            questionType: 'structure'
           },
           {
             id: 'q23',
@@ -332,7 +376,9 @@ export const mockPassages: Passage[] = [
               D: 'Each sentence, crafted with care, reflected the author\'s lyrical and precise voice.'
             },
             correctAnswer: 'D',
-            explanation: 'Option D combines the ideas smoothly and avoids repetition.'
+            explanation: 'Option D combines the ideas smoothly and avoids repetition.',
+            difficulty: 'Hard',
+            questionType: 'structure'
           },
           {
             id: 'q24',
@@ -345,7 +391,9 @@ export const mockPassages: Passage[] = [
               D: 'stepped outside, and the city had been awakened'
             },
             correctAnswer: 'C',
-            explanation: '"Was awakening" matches the ongoing action and avoids tense confusion.'
+            explanation: '"Was awakening" matches the ongoing action and avoids tense confusion.',
+            difficulty: 'Medium',
+            questionType: 'structure'
           },
           {
             id: 'q25',
@@ -358,7 +406,9 @@ export const mockPassages: Passage[] = [
               D: 'Cars honked, people rushed past, and chatter filled the sidewalks.'
             },
             correctAnswer: 'D',
-            explanation: 'All verbs are active and parallel: "honked," "rushed," "filled."'
+            explanation: 'All verbs are active and parallel: "honked," "rushed," "filled."',
+            difficulty: 'Easy',
+            questionType: 'structure'
           },
           {
             id: 'q26',
@@ -371,7 +421,9 @@ export const mockPassages: Passage[] = [
               D: 'when I felt most alive'
             },
             correctAnswer: 'B',
-            explanation: '"In which" is the correct idiomatic construction after "moments."'
+            explanation: '"In which" is the correct idiomatic construction after "moments."',
+            difficulty: 'Medium',
+            questionType: 'vocabulary'
           },
           {
             id: 'q27',
@@ -384,7 +436,9 @@ export const mockPassages: Passage[] = [
               D: 'The book\'s final sentence echoed in my mind as I walked.'
             },
             correctAnswer: 'D',
-            explanation: 'Option D ties the reading experience to the narrator\'s emotional state.'
+            explanation: 'Option D ties the reading experience to the narrator\'s emotional state.',
+            difficulty: 'Hard',
+            questionType: 'author-purpose'
           },
           {
             id: 'q28',
@@ -397,7 +451,9 @@ export const mockPassages: Passage[] = [
               D: 'I paused, remembering the hours I\'d spent inside, tracing the spines of books with titles I couldn\'t pronounce.'
             },
             correctAnswer: 'D',
-            explanation: 'Option D preserves the original meaning while improving clarity.'
+            explanation: 'Option D preserves the original meaning while improving clarity.',
+            difficulty: 'Medium',
+            questionType: 'detail'
           },
           {
             id: 'q29',
@@ -410,7 +466,9 @@ export const mockPassages: Passage[] = [
               D: 'Her expression familiar yet inscrutable.'
             },
             correctAnswer: 'D',
-            explanation: '"Inscrutable" matches the elevated tone and mirrors "familiar."'
+            explanation: '"Inscrutable" matches the elevated tone and mirrors "familiar."',
+            difficulty: 'Hard',
+            questionType: 'tone'
           }
         ]
       }

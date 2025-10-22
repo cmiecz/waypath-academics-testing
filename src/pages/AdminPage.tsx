@@ -66,7 +66,11 @@ export default function AdminPage() {
             D: fields[5].trim()
           },
           correctAnswer: fields[6].trim().toUpperCase() as 'A' | 'B' | 'C' | 'D',
-          explanation: fields[7]?.trim() || 'No explanation provided.'
+          explanation: fields[7]?.trim() || 'No explanation provided.',
+          // Optional difficulty (defaults to Medium if not provided)
+          difficulty: (fields[8]?.trim() as 'Easy' | 'Medium' | 'Hard') || 'Medium',
+          // Optional questionType (defaults to 'detail' if not provided)
+          questionType: fields[9]?.trim() as any || 'detail'
         };
         questions.push(question);
       }
@@ -332,12 +336,14 @@ export default function AdminPage() {
                 <li><code>Option D</code> - Answer choice D</li>
                 <li><code>Correct Answer</code> - The correct answer (A, B, C, or D)</li>
                 <li><code>Explanation</code> - Explanation for the answer (optional)</li>
+                <li><code>Difficulty</code> - Easy, Medium, or Hard (optional, defaults to Medium)</li>
+                <li><code>Question Type</code> - Type like detail, inference, main-idea, etc. (optional, defaults to detail)</li>
               </ol>
               
               <strong>Example CSV:</strong>
-              <pre>{`Question Number,Question Text,Option A,Option B,Option C,Option D,Correct Answer,Explanation
-1,"[1] For now, I stopped worrying about work and felt everything would be okay. Which transition best introduces this sentence?","No Change","Now and then","Later","Occasionally","A","'For now' signals a temporary emotional shift that fits the context."
-2,"[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice correctly uses a possessive pronoun?","No Change","they have","whom have","who's","A","'Whose' is the correct possessive form of 'who'."`}</pre>
+              <pre>{`Question Number,Question Text,Option A,Option B,Option C,Option D,Correct Answer,Explanation,Difficulty,Question Type
+1,"[1] For now, I stopped worrying about work and felt everything would be okay. Which transition best introduces this sentence?","No Change","Now and then","Later","Occasionally","A","'For now' signals a temporary emotional shift that fits the context.","Hard","structure"
+2,"[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice correctly uses a possessive pronoun?","No Change","they have","whom have","who's","A","'Whose' is the correct possessive form of 'who'.","Easy","vocabulary"`}</pre>
             </div>
           </div>
 
@@ -348,7 +354,9 @@ export default function AdminPage() {
               <li>Question numbers should be sequential (1, 2, 3...)</li>
               <li>Correct answers must be exactly A, B, C, or D</li>
               <li>Passage text can reference questions with [1], [2], etc.</li>
-              <li>All fields are required except Explanation</li>
+              <li>All fields are required except Explanation, Difficulty, and Question Type</li>
+              <li><strong>Difficulty levels:</strong> Use "Easy" for specific grammar questions (e.g., "Which choice maintains subject-verb agreement?"), "Medium" for moderately specific questions, and "Hard" for broad interpretive questions</li>
+              <li><strong>Question types:</strong> detail, inference, main-idea, author-purpose, vocabulary, tone, structure, comparison, cause-effect, sequence, generalization, evaluation</li>
             </ul>
           </div>
         </div>

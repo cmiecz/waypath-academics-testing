@@ -8,14 +8,16 @@ export default function TestSelectionPage() {
   const { currentUser, setUser } = useTestStore();
   const navigate = useNavigate();
   const [selectedTestMode, setSelectedTestMode] = useState<'practice' | 'test'>('practice');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all');
 
   const handleSubjectSelect = async (subject: 'English' | 'Math' | 'Reading' | 'Science') => {
     try {
-      // Navigate to passage selection with subject and test mode
+      // Navigate to passage selection with subject, test mode, and difficulty
       navigate('/passage-selection', { 
         state: { 
           subject, 
-          testMode: selectedTestMode 
+          testMode: selectedTestMode,
+          difficultyFilter: selectedDifficulty
         } 
       });
     } catch (error) {
@@ -118,6 +120,43 @@ export default function TestSelectionPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Difficulty Filter */}
+        <div className="difficulty-selection">
+          <h3>Question Difficulty</h3>
+          <div className="difficulty-buttons">
+            <button 
+              className={`difficulty-btn ${selectedDifficulty === 'all' ? 'active' : ''}`}
+              onClick={() => setSelectedDifficulty('all')}
+            >
+              All Levels
+            </button>
+            <button 
+              className={`difficulty-btn easy ${selectedDifficulty === 'Easy' ? 'active' : ''}`}
+              onClick={() => setSelectedDifficulty('Easy')}
+            >
+              Easy
+            </button>
+            <button 
+              className={`difficulty-btn medium ${selectedDifficulty === 'Medium' ? 'active' : ''}`}
+              onClick={() => setSelectedDifficulty('Medium')}
+            >
+              Medium
+            </button>
+            <button 
+              className={`difficulty-btn hard ${selectedDifficulty === 'Hard' ? 'active' : ''}`}
+              onClick={() => setSelectedDifficulty('Hard')}
+            >
+              Hard
+            </button>
+          </div>
+          <p className="difficulty-description">
+            {selectedDifficulty === 'all' && 'Practice questions of all difficulty levels'}
+            {selectedDifficulty === 'Easy' && 'Specific, direct questions that name grammar concepts'}
+            {selectedDifficulty === 'Medium' && 'Moderately specific questions requiring careful analysis'}
+            {selectedDifficulty === 'Hard' && 'Broad, interpretive questions testing deeper understanding'}
+          </p>
         </div>
 
         <div className="subjects-grid">

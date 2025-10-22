@@ -6,6 +6,7 @@ import {
   OverallPerformance, 
   QuestionTypePerformance, 
   PassageTypePerformance, 
+  DifficultyPerformance,
   TimeAnalysis, 
   ProgressTracking, 
   WeaknessAnalysis,
@@ -25,6 +26,7 @@ export function calculatePerformanceAnalytics(
     overall: calculateOverallPerformance(attempts),
     questionTypes: calculateQuestionTypePerformance(questionAttempts),
     passageTypes: calculatePassageTypePerformance(attempts),
+    difficultyLevels: calculateDifficultyPerformance(questionAttempts),
     timeAnalysis: calculateTimeAnalysis(attempts, questionAttempts),
     progress: calculateProgressTracking(attempts),
     weaknesses: identifyWeaknesses(questionAttempts, attempts)
@@ -115,6 +117,54 @@ function calculateQuestionTypePerformance(questionAttempts: QuestionAttempt[]): 
       trend
     };
   });
+}
+
+/**
+ * Calculate difficulty level performance
+ */
+function calculateDifficultyPerformance(questionAttempts: QuestionAttempt[]): DifficultyPerformance[] {
+  const difficultyGroups = questionAttempts.reduce((groups, attempt) => {
+    const difficulty = attempt.difficulty || 'Medium';
+    if (!groups[difficulty]) {
+      groups[difficulty] = [];
+    }
+    groups[difficulty].push(attempt);
+    return groups;
+  }, {} as Record<'Easy' | 'Medium' | 'Hard', QuestionAttempt[]>);
+
+  const difficulties: ('Easy' | 'Medium' | 'Hard')[] = ['Easy', 'Medium', 'Hard'];
+  
+  return difficulties.map(difficulty => {
+    const attempts = difficultyGroups[difficulty] || [];
+    const totalQuestions = attempts.length;
+    const correctAnswers = attempts.filter(a => a.isCorrect).length;
+    const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
+    const averageTime = totalQuestions > 0 ? 
+      attempts.reduce((sum, a) => sum + a.timeSpent, 0) / totalQuestions : 0;
+
+    // Calculate trend (comparing first half vs second half)
+    const half = Math.floor(attempts.length / 2);
+    const firstHalf = attempts.slice(0, half);
+    const secondHalf = attempts.slice(half);
+
+    const firstHalfAccuracy = firstHalf.length > 0 ? 
+      (firstHalf.filter(a => a.isCorrect).length / firstHalf.length) * 100 : 0;
+    const secondHalfAccuracy = secondHalf.length > 0 ? 
+      (secondHalf.filter(a => a.isCorrect).length / secondHalf.length) * 100 : 0;
+
+    let trend: 'improving' | 'declining' | 'stable' = 'stable';
+    if (secondHalfAccuracy > firstHalfAccuracy + 5) trend = 'improving';
+    else if (secondHalfAccuracy < firstHalfAccuracy - 5) trend = 'declining';
+
+    return {
+      difficulty,
+      totalQuestions,
+      correctAnswers,
+      accuracy: Math.round(accuracy),
+      averageTime: Math.round(averageTime),
+      trend
+    };
+  }).filter(perf => perf.totalQuestions > 0); // Only return difficulties with data
 }
 
 /**
