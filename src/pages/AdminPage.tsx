@@ -59,18 +59,20 @@ export default function AdminPage() {
           id: `q${i}`,
           questionNumber: parseInt(fields[0]) || i,
           text: fields[1].trim(),
+          // Optional: Easy/Medium/Hard text versions
+          easyText: fields[2]?.trim() || undefined,
+          mediumText: fields[3]?.trim() || undefined,
+          hardText: fields[4]?.trim() || undefined,
           options: {
-            A: fields[2].trim(),
-            B: fields[3].trim(),
-            C: fields[4].trim(),
-            D: fields[5].trim()
+            A: fields[5].trim(),
+            B: fields[6].trim(),
+            C: fields[7].trim(),
+            D: fields[8].trim()
           },
-          correctAnswer: fields[6].trim().toUpperCase() as 'A' | 'B' | 'C' | 'D',
-          explanation: fields[7]?.trim() || 'No explanation provided.',
-          // Optional difficulty (defaults to Medium if not provided)
-          difficulty: (fields[8]?.trim() as 'Easy' | 'Medium' | 'Hard') || 'Medium',
+          correctAnswer: fields[9].trim().toUpperCase() as 'A' | 'B' | 'C' | 'D',
+          explanation: fields[10]?.trim() || 'No explanation provided.',
           // Optional questionType (defaults to 'detail' if not provided)
-          questionType: fields[9]?.trim() as any || 'detail'
+          questionType: fields[11]?.trim() as any || 'detail'
         };
         questions.push(question);
       }
@@ -329,21 +331,23 @@ export default function AdminPage() {
               <strong>Required columns:</strong>
               <ol>
                 <li><code>Question Number</code> - The question number (1, 2, 3...)</li>
-                <li><code>Question Text</code> - The question text</li>
+                <li><code>Default Question Text</code> - The default question text (fallback)</li>
+                <li><code>Easy Text</code> - Easy version: explicitly names grammar rule (optional)</li>
+                <li><code>Medium Text</code> - Medium version: moderately specific (optional)</li>
+                <li><code>Hard Text</code> - Hard version: broad/interpretive (optional)</li>
                 <li><code>Option A</code> - Answer choice A</li>
                 <li><code>Option B</code> - Answer choice B</li>
                 <li><code>Option C</code> - Answer choice C</li>
                 <li><code>Option D</code> - Answer choice D</li>
                 <li><code>Correct Answer</code> - The correct answer (A, B, C, or D)</li>
                 <li><code>Explanation</code> - Explanation for the answer (optional)</li>
-                <li><code>Difficulty</code> - Easy, Medium, or Hard (optional, defaults to Medium)</li>
-                <li><code>Question Type</code> - Type like detail, inference, main-idea, etc. (optional, defaults to detail)</li>
+                <li><code>Question Type</code> - Type like detail, inference, structure, etc. (optional)</li>
               </ol>
               
               <strong>Example CSV:</strong>
-              <pre>{`Question Number,Question Text,Option A,Option B,Option C,Option D,Correct Answer,Explanation,Difficulty,Question Type
-1,"[1] For now, I stopped worrying about work and felt everything would be okay. Which transition best introduces this sentence?","No Change","Now and then","Later","Occasionally","A","'For now' signals a temporary emotional shift that fits the context.","Hard","structure"
-2,"[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice correctly uses a possessive pronoun?","No Change","they have","whom have","who's","A","'Whose' is the correct possessive form of 'who'.","Easy","vocabulary"`}</pre>
+              <pre>{`Question Number,Default Text,Easy Text,Medium Text,Hard Text,Option A,Option B,Option C,Option D,Correct Answer,Explanation,Question Type
+1,"Which transition best introduces this sentence?","Which transitional phrase correctly indicates a temporary time period?","Which transition best maintains clarity?","Which choice is most effective?","No Change","Now and then","Later","Occasionally","A","'For now' signals a temporary emotional shift.","structure"
+2,"Which choice uses a possessive pronoun?","Which choice correctly uses a possessive pronoun to show ownership?","Which choice maintains proper grammar?","Which choice is correct?","No Change","they have","whom have","who's","A","'Whose' is the correct possessive pronoun.","vocabulary"`}</pre>
             </div>
           </div>
 
@@ -354,8 +358,14 @@ export default function AdminPage() {
               <li>Question numbers should be sequential (1, 2, 3...)</li>
               <li>Correct answers must be exactly A, B, C, or D</li>
               <li>Passage text can reference questions with [1], [2], etc.</li>
-              <li>All fields are required except Explanation, Difficulty, and Question Type</li>
-              <li><strong>Difficulty levels:</strong> Use "Easy" for specific grammar questions (e.g., "Which choice maintains subject-verb agreement?"), "Medium" for moderately specific questions, and "Hard" for broad interpretive questions</li>
+              <li>Only Question Number, Default Text, Options A-D, and Correct Answer are required</li>
+              <li><strong>Difficulty versions:</strong> Provide three text versions for adaptive difficulty:
+                <ul>
+                  <li><strong>Easy:</strong> Explicitly names the grammar rule (e.g., "Which choice maintains subject-verb agreement?")</li>
+                  <li><strong>Medium:</strong> Moderately specific (e.g., "Which choice maintains proper grammar?")</li>
+                  <li><strong>Hard:</strong> Broad/interpretive (e.g., "Which choice is most effective?")</li>
+                </ul>
+              </li>
               <li><strong>Question types:</strong> detail, inference, main-idea, author-purpose, vocabulary, tone, structure, comparison, cause-effect, sequence, generalization, evaluation</li>
             </ul>
           </div>

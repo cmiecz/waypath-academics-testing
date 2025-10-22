@@ -9,7 +9,10 @@ export interface User {
 export interface Question {
   id: string;
   questionNumber: number;
-  text: string;
+  text: string; // Kept for backward compatibility
+  easyText?: string; // Easy version: explicitly names grammar rule
+  mediumText?: string; // Medium version: moderately specific
+  hardText?: string; // Hard version: broad/interpretive
   options: {
     A: string;
     B: string;

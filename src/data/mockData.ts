@@ -20,6 +20,9 @@ export const mockPassages: Passage[] = [
             id: 'q1',
             questionNumber: 1,
             text: '[1] For now, I stopped worrying about work and felt everything would be okay. Which transition best introduces this sentence?',
+            easyText: '[1] For now, I stopped worrying about work and felt everything would be okay. Which transitional phrase correctly indicates a temporary time period?',
+            mediumText: '[1] For now, I stopped worrying about work and felt everything would be okay. Which transition word or phrase best maintains clarity and flow?',
+            hardText: '[1] For now, I stopped worrying about work and felt everything would be okay. Which choice is most effective here?',
             options: {
               A: 'No Change',
               B: 'Now and then',
@@ -35,6 +38,9 @@ export const mockPassages: Passage[] = [
             id: 'q2',
             questionNumber: 2,
             text: '[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice correctly uses a possessive pronoun?',
+            easyText: '[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice correctly uses a possessive pronoun to show ownership?',
+            mediumText: '[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice maintains proper grammatical structure?',
+            hardText: '[2] The children, whose eyes sparkled with delight, sat quietly in the back seat. Which choice best completes the underlined portion?',
             options: {
               A: 'No Change',
               B: 'they have',
@@ -50,6 +56,9 @@ export const mockPassages: Passage[] = [
             id: 'q3',
             questionNumber: 3,
             text: '[3] fade into the evening air Which choice maintains consistent verb tense?',
+            easyText: '[3] fade into the evening air Which choice correctly maintains consistent verb tense to match "slowed"?',
+            mediumText: '[3] fade into the evening air Which choice maintains proper grammatical structure?',
+            hardText: '[3] fade into the evening air Which choice best completes the underlined portion?',
             options: {
               A: 'No Change',
               B: 'have disappeared',
@@ -65,6 +74,9 @@ export const mockPassages: Passage[] = [
             id: 'q4',
             questionNumber: 4,
             text: '[4] The desert was dry and arid, with little vegetation in sight. Which choice avoids redundancy?',
+            easyText: '[4] The desert was dry and arid, with little vegetation in sight. Which choice eliminates redundant wording?',
+            mediumText: '[4] The desert was dry and arid, with little vegetation in sight. Which choice improves conciseness?',
+            hardText: '[4] The desert was dry and arid, with little vegetation in sight. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'dry and lacking moisture',
@@ -80,6 +92,9 @@ export const mockPassages: Passage[] = [
             id: 'q5',
             questionNumber: 5,
             text: '[5] gliding effortlessly in a perfect V-formation Which choice places the modifier correctly?',
+            easyText: '[5] gliding effortlessly in a perfect V-formation Which choice correctly places the modifying phrase to avoid confusion?',
+            mediumText: '[5] gliding effortlessly in a perfect V-formation Which choice best improves sentence structure?',
+            hardText: '[5] gliding effortlessly in a perfect V-formation Which choice most effectively revises the sentence?',
             options: {
               A: 'No Change',
               B: 'The birds glided effortlessly across the sky in a perfect V-formation.',
@@ -95,6 +110,9 @@ export const mockPassages: Passage[] = [
             id: 'q6',
             questionNumber: 6,
             text: '[6] sink in. Which choice best completes the sentence with the appropriate idiom?',
+            easyText: '[6] sink in. Which choice uses the correct idiomatic expression for emotionally absorbing a moment?',
+            mediumText: '[6] sink in. Which choice maintains proper word choice and clarity?',
+            hardText: '[6] sink in. Which choice is most effective here?',
             options: {
               A: 'No Change',
               B: 'soak up',
@@ -110,6 +128,9 @@ export const mockPassages: Passage[] = [
             id: 'q7',
             questionNumber: 7,
             text: '[7] I listened to the wind, watched the sun rise, and felt the sand beneath my feet. Which choice maintains parallel structure?',
+            easyText: '[7] I listened to the wind, watched the sun rise, and felt the sand beneath my feet. Which choice correctly maintains parallel structure with the verbs "listened" and "watched"?',
+            mediumText: '[7] I listened to the wind, watched the sun rise, and felt the sand beneath my feet. Which choice improves grammatical consistency?',
+            hardText: '[7] I listened to the wind, watched the sun rise, and felt the sand beneath my feet. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'feeling the sand beneath my feet',
@@ -125,6 +146,9 @@ export const mockPassages: Passage[] = [
             id: 'q8',
             questionNumber: 8,
             text: '[8] morning\'s Which choice correctly uses apostrophes?',
+            easyText: '[8] morning\'s Which choice correctly uses an apostrophe to show possession?',
+            mediumText: '[8] morning\'s Which choice maintains proper punctuation?',
+            hardText: '[8] morning\'s Which choice best completes the underlined portion?',
             options: {
               A: 'No Change',
               B: 'mornings',
@@ -140,6 +164,9 @@ export const mockPassages: Passage[] = [
             id: 'q9',
             questionNumber: 9,
             text: '[9] The library was warm, quiet, and welcoming. Which choice correctly punctuates the sentence?',
+            easyText: '[9] The library was warm, quiet, and welcoming. Which choice correctly uses commas in a series of three adjectives?',
+            mediumText: '[9] The library was warm, quiet, and welcoming. Which choice maintains proper punctuation?',
+            hardText: '[9] The library was warm, quiet, and welcoming. Which choice is correct?',
             options: {
               A: 'No Change',
               B: 'warm quiet and welcoming',
@@ -155,6 +182,9 @@ export const mockPassages: Passage[] = [
             id: 'q10',
             questionNumber: 10,
             text: '[10] tucked out of sight Which choice best maintains clarity and avoids repetition?',
+            easyText: '[10] tucked out of sight Which choice eliminates wordiness and maintains concise language?',
+            mediumText: '[10] tucked out of sight Which choice best improves clarity?',
+            hardText: '[10] tucked out of sight Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'hidden and not seen',
@@ -170,6 +200,9 @@ export const mockPassages: Passage[] = [
             id: 'q11',
             questionNumber: 11,
             text: '[11] The librarian\'s quiet encouragement helped me discover new authors. Which choice correctly uses a possessive noun?',
+            easyText: '[11] The librarian\'s quiet encouragement helped me discover new authors. Which choice correctly uses an apostrophe to show singular possession?',
+            mediumText: '[11] The librarian\'s quiet encouragement helped me discover new authors. Which choice maintains grammatical correctness?',
+            hardText: '[11] The librarian\'s quiet encouragement helped me discover new authors. Which choice is correct?',
             options: {
               A: 'No Change',
               B: 'librarians',
@@ -185,6 +218,9 @@ export const mockPassages: Passage[] = [
             id: 'q12',
             questionNumber: 12,
             text: '[12] it was intriguing and mysterious. Which choice best combines the ideas in the sentence?',
+            easyText: '[12] it was intriguing and mysterious. Which choice correctly uses a semicolon to join two independent clauses?',
+            mediumText: '[12] it was intriguing and mysterious. Which choice improves sentence structure?',
+            hardText: '[12] it was intriguing and mysterious. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'I read the first chapter, it was intriguing and mysterious.',
@@ -200,6 +236,9 @@ export const mockPassages: Passage[] = [
             id: 'q13',
             questionNumber: 13,
             text: '[13] calm Which word best matches the tone of quiet reflection?',
+            easyText: '[13] calm Which word choice best maintains the peaceful, reflective tone of the passage?',
+            mediumText: '[13] calm Which word best conveys the appropriate mood?',
+            hardText: '[13] calm Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'boredom',
@@ -215,6 +254,9 @@ export const mockPassages: Passage[] = [
             id: 'q14',
             questionNumber: 14,
             text: '[14] The buildings stood towering above me Which choice avoids redundancy?',
+            easyText: '[14] The buildings stood towering above me Which choice eliminates the redundant use of "stood" and "towering"?',
+            mediumText: '[14] The buildings stood towering above me Which choice improves conciseness?',
+            hardText: '[14] The buildings stood towering above me Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'tall and high above me',
@@ -230,6 +272,9 @@ export const mockPassages: Passage[] = [
             id: 'q15',
             questionNumber: 15,
             text: '[15] The sound of footsteps and distant traffic fills the air Which choice maintains correct subject-verb agreement?',
+            easyText: '[15] The sound of footsteps and distant traffic fills the air Which choice correctly matches the singular subject "sound" with the appropriate verb?',
+            mediumText: '[15] The sound of footsteps and distant traffic fills the air Which choice maintains proper grammar?',
+            hardText: '[15] The sound of footsteps and distant traffic fills the air Which choice is correct?',
             options: {
               A: 'No Change',
               B: 'fill',
@@ -245,6 +290,9 @@ export const mockPassages: Passage[] = [
             id: 'q16',
             questionNumber: 16,
             text: '[16] Consequently, I felt more connected to the city than ever before. Which transition best connects the narrator\'s thoughts?',
+            easyText: '[16] Consequently, I felt more connected to the city than ever before. Which transitional word correctly shows a cause-and-effect relationship?',
+            mediumText: '[16] Consequently, I felt more connected to the city than ever before. Which transition best maintains logical flow?',
+            hardText: '[16] Consequently, I felt more connected to the city than ever before. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'As a result',
@@ -279,6 +327,9 @@ export const mockPassages: Passage[] = [
             id: 'q17',
             questionNumber: 1,
             text: '[1] Despite of the city\'s constant motion Which choice corrects the error in the underlined portion?',
+            easyText: '[1] Despite of the city\'s constant motion Which choice correctly uses the preposition "despite" without adding "of"?',
+            mediumText: '[1] Despite of the city\'s constant motion Which choice corrects the grammatical error?',
+            hardText: '[1] Despite of the city\'s constant motion Which choice is correct?',
             options: {
               A: 'No Change',
               B: 'Despite the city\'s constant motion',
@@ -294,6 +345,9 @@ export const mockPassages: Passage[] = [
             id: 'q18',
             questionNumber: 2,
             text: '[2] The streets, usually bustling, was nearly empty Which choice maintains subject-verb agreement?',
+            easyText: '[2] The streets, usually bustling, was nearly empty Which choice correctly matches the plural subject "streets" with the appropriate verb?',
+            mediumText: '[2] The streets, usually bustling, was nearly empty Which choice maintains proper grammar?',
+            hardText: '[2] The streets, usually bustling, was nearly empty Which choice is correct?',
             options: {
               A: 'No Change',
               B: 'were nearly empty',
@@ -309,6 +363,9 @@ export const mockPassages: Passage[] = [
             id: 'q19',
             questionNumber: 3,
             text: '[3] Turning the corner, the sun had begun to rise Which choice avoids a misplaced modifier?',
+            easyText: '[3] Turning the corner, the sun had begun to rise Which choice correctly places the modifier so it clearly refers to "I" rather than "the sun"?',
+            mediumText: '[3] Turning the corner, the sun had begun to rise Which choice improves sentence structure?',
+            hardText: '[3] Turning the corner, the sun had begun to rise Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'As I turned the corner, the sun had begun to rise',
@@ -324,6 +381,9 @@ export const mockPassages: Passage[] = [
             id: 'q20',
             questionNumber: 4,
             text: '[4] The library, which I had visited often as a child, stood quietly at the end of the block. Which choice best maintains sentence clarity and flow?',
+            easyText: '[4] The library, which I had visited often as a child, stood quietly at the end of the block. Which choice correctly positions the relative clause to avoid ambiguity?',
+            mediumText: '[4] The library, which I had visited often as a child, stood quietly at the end of the block. Which choice maintains the clearest meaning?',
+            hardText: '[4] The library, which I had visited often as a child, stood quietly at the end of the block. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'The library stood quietly at the end of the block, which I had visited often as a child.',
@@ -339,6 +399,9 @@ export const mockPassages: Passage[] = [
             id: 'q21',
             questionNumber: 5,
             text: '[5] Books lined the shelves in neat rows, their covers faded and pages worn from years of use. Which choice best maintains parallel structure?',
+            easyText: '[5] Books lined the shelves in neat rows, their covers faded and pages worn from years of use. Which choice correctly maintains parallel structure by repeating "their" before both elements?',
+            mediumText: '[5] Books lined the shelves in neat rows, their covers faded and pages worn from years of use. Which choice improves grammatical consistency?',
+            hardText: '[5] Books lined the shelves in neat rows, their covers faded and pages worn from years of use. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'their covers fading and pages worn',
@@ -354,6 +417,9 @@ export const mockPassages: Passage[] = [
             id: 'q22',
             questionNumber: 6,
             text: '[6] I sat at a table near the window, opening a novel, and began to read. Which choice corrects the awkward phrasing?',
+            easyText: '[6] I sat at a table near the window, opening a novel, and began to read. Which choice maintains parallel verb forms with "sat" and "began"?',
+            mediumText: '[6] I sat at a table near the window, opening a novel, and began to read. Which choice improves sentence structure?',
+            hardText: '[6] I sat at a table near the window, opening a novel, and began to read. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'I sat at a table near the window, opened a novel, and began to read.',
@@ -369,6 +435,9 @@ export const mockPassages: Passage[] = [
             id: 'q23',
             questionNumber: 7,
             text: '[7] Each sentence was crafted with care, the author\'s voice both lyrical and precise. Which choice best combines the ideas into one clear sentence?',
+            easyText: '[7] Each sentence was crafted with care, the author\'s voice both lyrical and precise. Which choice eliminates the comma splice by properly combining the two clauses?',
+            mediumText: '[7] Each sentence was crafted with care, the author\'s voice both lyrical and precise. Which choice best improves clarity?',
+            hardText: '[7] Each sentence was crafted with care, the author\'s voice both lyrical and precise. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'Each sentence was crafted with care; the author\'s voice was lyrical and precise.',
@@ -384,6 +453,9 @@ export const mockPassages: Passage[] = [
             id: 'q24',
             questionNumber: 8,
             text: '[8] Eventually, I closed the book, stepped outside, and the city had awakened. Which choice maintains logical verb tense?',
+            easyText: '[8] Eventually, I closed the book, stepped outside, and the city had awakened. Which choice correctly uses the past progressive tense to show ongoing action?',
+            mediumText: '[8] Eventually, I closed the book, stepped outside, and the city had awakened. Which choice maintains proper verb tense?',
+            hardText: '[8] Eventually, I closed the book, stepped outside, and the city had awakened. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'stepped outside, and the city awakens',
@@ -399,6 +471,9 @@ export const mockPassages: Passage[] = [
             id: 'q25',
             questionNumber: 9,
             text: '[9] Cars honked, people rushed past, and the sidewalks filled with chatter. Which choice best maintains parallel structure?',
+            easyText: '[9] Cars honked, people rushed past, and the sidewalks filled with chatter. Which choice maintains parallel structure with three active past-tense verbs?',
+            mediumText: '[9] Cars honked, people rushed past, and the sidewalks filled with chatter. Which choice improves grammatical consistency?',
+            hardText: '[9] Cars honked, people rushed past, and the sidewalks filled with chatter. Which choice is most effective?',
             options: {
               A: 'No Change',
               B: 'Cars honked, people rushing past, and chatter filled the sidewalks.',
@@ -414,6 +489,9 @@ export const mockPassages: Passage[] = [
             id: 'q26',
             questionNumber: 10,
             text: '[10] It was in these moments, fleeting and often unnoticed, where I felt most alive. Which choice corrects the idiomatic error?',
+            easyText: '[10] It was in these moments, fleeting and often unnoticed, where I felt most alive. Which choice correctly uses "in which" instead of "where" after "moments"?',
+            mediumText: '[10] It was in these moments, fleeting and often unnoticed, where I felt most alive. Which choice maintains proper idiomatic usage?',
+            hardText: '[10] It was in these moments, fleeting and often unnoticed, where I felt most alive. Which choice is correct?',
             options: {
               A: 'No Change',
               B: 'in which I felt most alive',
@@ -429,6 +507,9 @@ export const mockPassages: Passage[] = [
             id: 'q27',
             questionNumber: 11,
             text: 'Which sentence would best conclude the paragraph and reinforce the narrator\'s emotional shift?',
+            easyText: 'Which sentence best concludes the paragraph by connecting the reading experience to the narrator\'s lasting emotional impact?',
+            mediumText: 'Which sentence provides the most effective conclusion to reinforce the narrator\'s emotional state?',
+            hardText: 'Which sentence is the most effective conclusion?',
             options: {
               A: 'I checked my watch and realized I was late.',
               B: 'The quiet had vanished, replaced by the city\'s familiar rhythm.',
@@ -444,6 +525,9 @@ export const mockPassages: Passage[] = [
             id: 'q28',
             questionNumber: 12,
             text: 'Which revision improves clarity and avoids wordiness? Original: "I paused, remembering the hours I\'d spent inside, tracing my fingers along the spines of books whose titles I couldn\'t yet pronounce."',
+            easyText: 'Which revision eliminates unnecessary words while preserving the original meaning about tracing book spines with unfamiliar titles?',
+            mediumText: 'Which revision best improves clarity and conciseness?',
+            hardText: 'Which revision is most effective?',
             options: {
               A: 'I paused, remembering hours spent tracing book spines I couldn\'t pronounce.',
               B: 'I paused, remembering hours spent inside, touching books with unreadable titles.',
@@ -459,6 +543,9 @@ export const mockPassages: Passage[] = [
             id: 'q29',
             questionNumber: 13,
             text: 'Which choice best maintains tone and style? Original: "Her expression familiar and unreadable."',
+            easyText: 'Which choice best maintains the literary tone by using sophisticated vocabulary that mirrors "familiar"?',
+            mediumText: 'Which choice best maintains appropriate tone and style?',
+            hardText: 'Which choice is most effective?',
             options: {
               A: 'Her face looked blank.',
               B: 'Her expression was hard to read.',

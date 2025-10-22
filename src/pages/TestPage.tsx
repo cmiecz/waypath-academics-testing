@@ -36,22 +36,24 @@ export default function TestPage() {
   const testMode = location.state?.testMode || 'practice';
   const difficultyFilter = currentSession?.difficultyFilter || 'all';
   
-  // Filter questions by difficulty
-  const filteredQuestions = currentPassage?.questions.filter(q => {
-    if (difficultyFilter === 'all' || !q.difficulty) return true;
-    return q.difficulty === difficultyFilter;
-  }) || [];
+  // Get the appropriate question text based on selected difficulty
+  const getQuestionText = (question: any) => {
+    if (difficultyFilter === 'Easy' && question.easyText) return question.easyText;
+    if (difficultyFilter === 'Medium' && question.mediumText) return question.mediumText;
+    if (difficultyFilter === 'Hard' && question.hardText) return question.hardText;
+    return question.text; // Fallback to default text
+  };
 
   // Timer
   useEffect(() => {
-    if (currentPassage && filteredQuestions.length > 0) {
+    if (currentPassage && currentPassage.questions.length > 0) {
       console.log('TestPage mounted - Timer running for passage:', currentPassage.title);
       console.log('Current session time:', sessionTime, 'seconds');
       console.log('Timer running state:', testStore.getState().timerRunning);
-      console.log('Difficulty filter:', difficultyFilter, '- Showing', filteredQuestions.length, 'questions');
+      console.log('Difficulty filter:', difficultyFilter);
       
       // Start timing for the first question
-      const firstQuestion = filteredQuestions[0];
+      const firstQuestion = currentPassage.questions[0];
       if (firstQuestion) {
         setQuestionStartTimes(prev => ({
           ...prev,
@@ -72,9 +74,10 @@ export default function TestPage() {
 
   // Auto-scroll to highlighted anchor when question changes
   useEffect(() => {
-    if (highlightedAnchorRef.current && filteredQuestions.length > 0) {
-      const currentQuestion = filteredQuestions[currentQuestionIndex];
-      const currentAnchorReference = extractAnchorReference(currentQuestion?.text);
+    if (highlightedAnchorRef.current && currentPassage) {
+      const currentQuestion = currentPassage.questions[currentQuestionIndex];
+      const questionText = getQuestionText(currentQuestion);
+      const currentAnchorReference = extractAnchorReference(questionText);
       
       if (currentAnchorReference) {
         // Small delay to ensure the DOM has updated with the highlighting
@@ -87,7 +90,7 @@ export default function TestPage() {
         }, 100);
       }
     }
-  }, [currentQuestionIndex, filteredQuestions]);
+  }, [currentQuestionIndex, currentPassage, difficultyFilter]);
 
   if (!currentPassage || !currentSession) {
     return (
@@ -103,24 +106,13 @@ export default function TestPage() {
     );
   }
 
-  if (filteredQuestions.length === 0) {
-    return (
-      <div className="test-page">
-        <div className="error-container">
-          <h2>No Questions Available</h2>
-          <p>No questions match the selected difficulty level for this passage.</p>
-          <button onClick={() => navigate('/test-selection')} className="btn-primary">
-            Back to Test Selection
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const currentQuestion = filteredQuestions[currentQuestionIndex];
+  const currentQuestion = currentPassage.questions[currentQuestionIndex];
+  
+  // Get the appropriate question text based on difficulty
+  const displayedQuestionText = currentQuestion ? getQuestionText(currentQuestion) : '';
   
   // Extract anchor reference for highlighting
-  const currentAnchorReference = extractAnchorReference(currentQuestion?.text);
+  const currentAnchorReference = extractAnchorReference(displayedQuestionText);
   
   // Debug logging
   console.log('Current question text:', currentQuestion?.text);
@@ -132,14 +124,14 @@ export default function TestPage() {
         <div className="error-container">
           <h2>Question Not Found</h2>
           <p>Question index: {currentQuestionIndex}</p>
-          <p>Total questions: {filteredQuestions.length}</p>
+          <p>Total questions: {currentPassage.questions.length}</p>
         </div>
       </div>
     );
   }
 
-  const isComplete = filteredQuestions.every(q => answers[q.id]);
-  const isLastQuestion = currentQuestionIndex === filteredQuestions.length - 1;
+  const isComplete = currentPassage.questions.every(q => answers[q.id]);
+  const isLastQuestion = currentQuestionIndex === currentPassage.questions.length - 1;
   const currentPassageNumber = (currentSession.currentPassageIndex || 0) + 1;
   const totalPassages = passages.length;
 
@@ -167,9 +159,9 @@ export default function TestPage() {
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex < filteredQuestions.length - 1) {
+    if (currentQuestionIndex < currentPassage.questions.length - 1) {
       // Track time for current question before moving
-      const currentQuestion = filteredQuestions[currentQuestionIndex];
+      const currentQuestion = currentPassage.questions[currentQuestionIndex];
       if (currentQuestion) {
         const questionStartTime = questionStartTimes[currentQuestion.id];
         if (questionStartTime) {
@@ -184,7 +176,7 @@ export default function TestPage() {
       setCurrentQuestionIndex(prev => prev + 1);
       
       // Start timing for next question
-      const nextQuestion = filteredQuestions[currentQuestionIndex + 1];
+      const nextQuestion = currentPassage.questions[currentQuestionIndex + 1];
       if (nextQuestion) {
         setQuestionStartTimes(prev => ({
           ...prev,
@@ -197,7 +189,7 @@ export default function TestPage() {
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       // Track time for current question before moving
-      const currentQuestion = filteredQuestions[currentQuestionIndex];
+      const currentQuestion = currentPassage.questions[currentQuestionIndex];
       if (currentQuestion) {
         const questionStartTime = questionStartTimes[currentQuestion.id];
         if (questionStartTime) {
@@ -212,7 +204,7 @@ export default function TestPage() {
       setCurrentQuestionIndex(prev => prev - 1);
       
       // Start timing for previous question
-      const prevQuestion = filteredQuestions[currentQuestionIndex - 1];
+      const prevQuestion = currentPassage.questions[currentQuestionIndex - 1];
       if (prevQuestion) {
         setQuestionStartTimes(prev => ({
           ...prev,
@@ -226,7 +218,8 @@ export default function TestPage() {
     console.log('=== SUBMITTING PASSAGE ===');
     console.log('Answers being submitted:', answers);
     console.log('Current passage ID:', currentPassage.id);
-    console.log('Filtered questions:', filteredQuestions.map(q => ({ id: q.id, number: q.questionNumber })));
+    console.log('All questions:', currentPassage.questions.map(q => ({ id: q.id, number: q.questionNumber })));
+    console.log('Difficulty level:', difficultyFilter);
     
     if (!isComplete) {
       alert('Please answer all questions before submitting.');
@@ -255,7 +248,7 @@ export default function TestPage() {
       // Add analytics data to the attempt
       if (attempt) {
         attempt.questionTimes = questionTimes;
-        attempt.questionTypes = filteredQuestions.reduce((acc, q) => {
+        attempt.questionTypes = currentPassage.questions.reduce((acc, q) => {
           acc[q.id] = (q.questionType || 'detail') as any;
           return acc;
         }, {} as Record<string, any>);
@@ -328,20 +321,20 @@ export default function TestPage() {
 
       {/* Question Navigation */}
       <div className="question-nav">
-        <p>Question {currentQuestionIndex + 1} of {filteredQuestions.length}</p>
+        <p>Question {currentQuestionIndex + 1} of {currentPassage.questions.length}</p>
         {difficultyFilter !== 'all' && (
           <span className="difficulty-filter-badge">
-            Showing: {difficultyFilter} Questions
+            Difficulty: {difficultyFilter}
           </span>
         )}
         <div className="progress-dots">
-          {filteredQuestions.map((_, index) => (
+          {currentPassage.questions.map((_, index) => (
             <div
               key={index}
               className={`dot ${
                 index === currentQuestionIndex
                   ? 'current'
-                  : answers[filteredQuestions[index].id]
+                  : answers[currentPassage.questions[index].id]
                   ? 'answered'
                   : 'unanswered'
               }`}
@@ -363,7 +356,7 @@ export default function TestPage() {
         {/* Question - Right Side (50%) */}
         <div className="question-side">
           <h3 className="question-text">
-            {currentQuestion.questionNumber}. {currentQuestion.text}
+            {currentQuestion.questionNumber}. {displayedQuestionText}
           </h3>
 
           <div className="options">
