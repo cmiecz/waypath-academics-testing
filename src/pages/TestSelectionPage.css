@@ -231,8 +231,8 @@
 }
 
 .difficulty-btn.hard.active {
-  background: var(--waypath-error);
-  border-color: var(--waypath-error);
+  background: var(--waypath-danger);
+  border-color: var(--waypath-danger);
 }
 
 .difficulty-description {
