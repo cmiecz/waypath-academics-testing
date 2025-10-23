@@ -79,70 +79,73 @@ export default function TestSelectionPage() {
 
       <div className="test-selection-container">
 
-        {/* Test Mode Toggle */}
-        <div className="test-mode-selection">
-          <div className="test-mode-labels">
-            <div className="mode-label-container">
-              <span className={`mode-label ${selectedTestMode === 'practice' ? 'active' : ''}`}>Practice</span>
-              <div className="tooltip">
-                <div className="tooltip-content">
-                  <strong>Practice Mode</strong><br />
-                  • Pause between passages<br />
-                  • See results after each passage<br />
-                  • Review answers and explanations<br />
-                  • Retake passages if needed
+        {/* Combined Test Mode and Difficulty Selection */}
+        <div className="mode-difficulty-container">
+          {/* Test Mode Toggle */}
+          <div className="test-mode-selection">
+            <div className="test-mode-labels">
+              <div className="mode-label-container">
+                <span className={`mode-label ${selectedTestMode === 'practice' ? 'active' : ''}`}>Practice</span>
+                <div className="tooltip">
+                  <div className="tooltip-content">
+                    <strong>Practice Mode</strong><br />
+                    • Pause between passages<br />
+                    • See results after each passage<br />
+                    • Review answers and explanations<br />
+                    • Retake passages if needed
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="toggle-switch-container">
-              <input
-                type="checkbox"
-                id="testModeToggle"
-                className="toggle-switch-checkbox"
-                checked={selectedTestMode === 'test'}
-                onChange={() => setSelectedTestMode(selectedTestMode === 'practice' ? 'test' : 'practice')}
-              />
-              <label htmlFor="testModeToggle" className="toggle-switch-label">
-                <span className="toggle-switch-inner" />
-                <span className="toggle-switch-switch" />
-              </label>
-            </div>
-            <div className="mode-label-container">
-              <span className={`mode-label ${selectedTestMode === 'test' ? 'active' : ''}`}>Test</span>
-              <div className="tooltip">
-                <div className="tooltip-content">
-                  <strong>Test Mode</strong><br />
-                  • Continuous testing<br />
-                  • No pauses between passages<br />
-                  • Final results at the end<br />
-                  • Simulates real test conditions
+              <div className="toggle-switch-container">
+                <input
+                  type="checkbox"
+                  id="testModeToggle"
+                  className="toggle-switch-checkbox"
+                  checked={selectedTestMode === 'test'}
+                  onChange={() => setSelectedTestMode(selectedTestMode === 'practice' ? 'test' : 'practice')}
+                />
+                <label htmlFor="testModeToggle" className="toggle-switch-label">
+                  <span className="toggle-switch-inner" />
+                  <span className="toggle-switch-switch" />
+                </label>
+              </div>
+              <div className="mode-label-container">
+                <span className={`mode-label ${selectedTestMode === 'test' ? 'active' : ''}`}>Test</span>
+                <div className="tooltip">
+                  <div className="tooltip-content">
+                    <strong>Test Mode</strong><br />
+                    • Continuous testing<br />
+                    • No pauses between passages<br />
+                    • Final results at the end<br />
+                    • Simulates real test conditions
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Difficulty Filter */}
-        <div className="difficulty-selection">
-          <div className="difficulty-row">
-            <label htmlFor="difficulty-select" className="difficulty-label">Question Difficulty</label>
-            <select 
-              id="difficulty-select"
-              className="difficulty-dropdown"
-              value={selectedDifficulty}
-              onChange={(e) => setSelectedDifficulty(e.target.value as 'all' | 'Easy' | 'Medium' | 'Hard')}
-            >
-              <option value="all">All Levels</option>
-              <option value="Easy">Easy</option>
-              <option value="Medium">Medium</option>
-              <option value="Hard">Hard</option>
-            </select>
-            <p className="difficulty-description">
-              {selectedDifficulty === 'all' && 'Practice questions of all difficulty levels'}
-              {selectedDifficulty === 'Easy' && 'Specific, direct questions that name grammar concepts'}
-              {selectedDifficulty === 'Medium' && 'Moderately specific questions requiring careful analysis'}
-              {selectedDifficulty === 'Hard' && 'Broad, interpretive questions testing deeper understanding'}
-            </p>
+          {/* Difficulty Filter */}
+          <div className="difficulty-selection">
+            <div className="difficulty-row">
+              <label htmlFor="difficulty-select" className="difficulty-label">Question Difficulty</label>
+              <select 
+                id="difficulty-select"
+                className="difficulty-dropdown"
+                value={selectedDifficulty}
+                onChange={(e) => setSelectedDifficulty(e.target.value as 'all' | 'Easy' | 'Medium' | 'Hard')}
+              >
+                <option value="all">All Levels</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+              <p className="difficulty-description">
+                {selectedDifficulty === 'all' && 'Practice questions of all difficulty levels'}
+                {selectedDifficulty === 'Easy' && 'Specific, direct questions that name grammar concepts'}
+                {selectedDifficulty === 'Medium' && 'Moderately specific questions requiring careful analysis'}
+                {selectedDifficulty === 'Hard' && 'Broad, interpretive questions testing deeper understanding'}
+              </p>
+            </div>
           </div>
         </div>
 

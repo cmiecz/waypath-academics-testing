@@ -63,14 +63,22 @@
   margin: 0 auto;
 }
 
-/* Test Mode Selection */
-.test-mode-selection {
+/* Combined Mode and Difficulty Container */
+.mode-difficulty-container {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
   background: var(--waypath-background);
   border-radius: var(--radius-xl);
   padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
   box-shadow: var(--shadow-md);
   border: 1px solid rgba(91, 155, 181, 0.1);
+}
+
+/* Test Mode Selection */
+.test-mode-selection {
+  flex-shrink: 0;
 }
 
 .test-mode-labels {
@@ -170,12 +178,7 @@
 
 /* Difficulty Selection */
 .difficulty-selection {
-  background: var(--waypath-background);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(91, 155, 181, 0.1);
+  flex: 1;
 }
 
 .difficulty-row {
@@ -313,6 +316,16 @@
 }
 
 @media (max-width: 768px) {
+  .mode-difficulty-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .difficulty-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .subjects-grid {
     grid-template-columns: 1fr;
   }
