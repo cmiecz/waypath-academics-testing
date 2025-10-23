@@ -176,63 +176,46 @@
   margin-bottom: var(--spacing-lg);
   box-shadow: var(--shadow-md);
   border: 1px solid rgba(91, 155, 181, 0.1);
-  text-align: center;
 }
 
-.difficulty-selection h3 {
+.difficulty-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.difficulty-label {
   font-family: var(--font-heading);
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--waypath-secondary);
-  margin: 0 0 var(--spacing-md) 0;
+  margin: 0;
+  white-space: nowrap;
 }
 
-.difficulty-buttons {
-  display: flex;
-  gap: var(--spacing-sm);
-  justify-content: center;
-  margin-bottom: var(--spacing-sm);
-}
-
-.difficulty-btn {
-  flex: 1;
-  max-width: 150px;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid rgba(91, 155, 181, 0.2);
+.difficulty-dropdown {
+  padding: 10px 16px;
+  border: 2px solid rgba(91, 155, 181, 0.3);
   border-radius: var(--radius-lg);
   background: white;
-  color: var(--waypath-text-secondary);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  color: var(--waypath-secondary);
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 150px;
+  outline: none;
 }
 
-.difficulty-btn:hover {
+.difficulty-dropdown:hover {
   border-color: var(--waypath-primary);
   background: rgba(91, 155, 181, 0.05);
 }
 
-.difficulty-btn.active {
+.difficulty-dropdown:focus {
   border-color: var(--waypath-primary);
-  background: var(--waypath-primary);
-  color: white;
-  box-shadow: 0 4px 8px rgba(91, 155, 181, 0.3);
-}
-
-.difficulty-btn.easy.active {
-  background: var(--waypath-success);
-  border-color: var(--waypath-success);
-}
-
-.difficulty-btn.medium.active {
-  background: #f59e0b;
-  border-color: #f59e0b;
-}
-
-.difficulty-btn.hard.active {
-  background: var(--waypath-danger);
-  border-color: var(--waypath-danger);
+  box-shadow: 0 0 0 3px rgba(91, 155, 181, 0.1);
 }
 
 .difficulty-description {
@@ -240,6 +223,8 @@
   color: var(--waypath-text-secondary);
   margin: 0;
   font-style: italic;
+  flex: 1;
+  min-width: 250px;
 }
 
 /* Subjects Grid */

@@ -124,39 +124,26 @@ export default function TestSelectionPage() {
 
         {/* Difficulty Filter */}
         <div className="difficulty-selection">
-          <h3>Question Difficulty</h3>
-          <div className="difficulty-buttons">
-            <button 
-              className={`difficulty-btn ${selectedDifficulty === 'all' ? 'active' : ''}`}
-              onClick={() => setSelectedDifficulty('all')}
+          <div className="difficulty-row">
+            <label htmlFor="difficulty-select" className="difficulty-label">Question Difficulty</label>
+            <select 
+              id="difficulty-select"
+              className="difficulty-dropdown"
+              value={selectedDifficulty}
+              onChange={(e) => setSelectedDifficulty(e.target.value as 'all' | 'Easy' | 'Medium' | 'Hard')}
             >
-              All Levels
-            </button>
-            <button 
-              className={`difficulty-btn easy ${selectedDifficulty === 'Easy' ? 'active' : ''}`}
-              onClick={() => setSelectedDifficulty('Easy')}
-            >
-              Easy
-            </button>
-            <button 
-              className={`difficulty-btn medium ${selectedDifficulty === 'Medium' ? 'active' : ''}`}
-              onClick={() => setSelectedDifficulty('Medium')}
-            >
-              Medium
-            </button>
-            <button 
-              className={`difficulty-btn hard ${selectedDifficulty === 'Hard' ? 'active' : ''}`}
-              onClick={() => setSelectedDifficulty('Hard')}
-            >
-              Hard
-            </button>
+              <option value="all">All Levels</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+            <p className="difficulty-description">
+              {selectedDifficulty === 'all' && 'Practice questions of all difficulty levels'}
+              {selectedDifficulty === 'Easy' && 'Specific, direct questions that name grammar concepts'}
+              {selectedDifficulty === 'Medium' && 'Moderately specific questions requiring careful analysis'}
+              {selectedDifficulty === 'Hard' && 'Broad, interpretive questions testing deeper understanding'}
+            </p>
           </div>
-          <p className="difficulty-description">
-            {selectedDifficulty === 'all' && 'Practice questions of all difficulty levels'}
-            {selectedDifficulty === 'Easy' && 'Specific, direct questions that name grammar concepts'}
-            {selectedDifficulty === 'Medium' && 'Moderately specific questions requiring careful analysis'}
-            {selectedDifficulty === 'Hard' && 'Broad, interpretive questions testing deeper understanding'}
-          </p>
         </div>
 
         <div className="subjects-grid">
