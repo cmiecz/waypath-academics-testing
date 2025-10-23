@@ -67,18 +67,20 @@
 .mode-difficulty-container {
   display: flex;
   gap: var(--spacing-md);
-  align-items: center;
+  align-items: stretch;
   margin-bottom: var(--spacing-lg);
-  background: var(--waypath-background);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(91, 155, 181, 0.1);
 }
 
 /* Test Mode Selection */
 .test-mode-selection {
   flex-shrink: 0;
+  background: var(--waypath-background);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(91, 155, 181, 0.1);
+  display: flex;
+  align-items: center;
 }
 
 .test-mode-labels {
@@ -103,7 +105,6 @@
 
 .mode-label.active {
   color: var(--waypath-secondary);
-  font-size: 1.25rem;
 }
 
 .mode-label-container .tooltip {
@@ -179,6 +180,13 @@
 /* Difficulty Selection */
 .difficulty-selection {
   flex: 1;
+  background: var(--waypath-background);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(91, 155, 181, 0.1);
+  display: flex;
+  align-items: center;
 }
 
 .difficulty-row {
@@ -186,10 +194,10 @@
   align-items: center;
   gap: var(--spacing-md);
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .difficulty-label {
-  font-family: var(--font-heading);
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--waypath-secondary);
@@ -318,12 +326,17 @@
 @media (max-width: 768px) {
   .mode-difficulty-container {
     flex-direction: column;
-    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .test-mode-selection {
+    justify-content: center;
   }
 
   .difficulty-row {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--spacing-sm);
   }
 
   .subjects-grid {
