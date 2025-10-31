@@ -57,15 +57,15 @@ export async function generatePassageWithQuestions(
 ): Promise<Passage> {
   const { subject, difficulty } = options;
 
-  const prompt = `You are an expert ACT English test passage creator. Generate a complete non-fiction passage with 12-15 questions following this exact structure:
+  const prompt = `You are an expert ACT English test passage creator. Generate a complete non-fiction passage with EXACTLY 15 questions following this exact structure:
 
 PASSAGE REQUIREMENTS:
-- Length: 300-500 words
+- Length: 400-500 words (matching standard ACT English passage length)
 - Genre: Non-fiction (informational, historical, scientific, or social science)
 - Include numbered anchor references [1], [2], [3], etc. in the passage text where questions will reference specific parts
 - Writing style: Similar to ACT English test passages - clear, engaging, appropriate for high school level
 
-QUESTION REQUIREMENTS (12-15 questions total):
+QUESTION REQUIREMENTS (CRITICAL - MUST BE EXACTLY 15 QUESTIONS):
 IMPORTANT: EVERY question MUST have BOTH easyText and hardText versions:
 - easyText: Tutoring help version that explicitly names the grammar rule or concept being tested (e.g., "Which choice correctly maintains subject-verb agreement?")
 - hardText: Actual test question that is broad/interpretive (e.g., "Which choice is most effective?")
@@ -112,11 +112,16 @@ Return ONLY a valid JSON object with this structure:
       "explanation": "Why this answer is correct",
       "questionType": "structure"
     },
-    ...more questions (12-15 total)
+    ...more questions (MUST BE EXACTLY 15 QUESTIONS TOTAL - this is the ACT English test standard)
   ]
 }
 
-Make sure the passage is interesting, the questions are well-written, and the difficulty matches ${difficulty} level.`;
+CRITICAL REQUIREMENTS:
+- You MUST generate exactly 15 questions - no more, no less. This is the standard ACT English format.
+- Passage must be 400-500 words to match ACT English test standards.
+- Every question MUST have both easyText and hardText versions.
+- Make sure the passage is interesting, the questions are well-written, and the difficulty matches ${difficulty} level.
+- Ensure you include exactly 15 question objects in the questions array.`;
 
   if (!OPENAI_API_KEY) {
     throw new Error('OpenAI API key is not configured. Please set REACT_APP_OPENAI_API_KEY environment variable.');
@@ -130,7 +135,7 @@ Make sure the passage is interesting, the questions are well-written, and the di
         'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4-turbo-preview',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
@@ -142,7 +147,8 @@ Make sure the passage is interesting, the questions are well-written, and the di
           }
         ],
         temperature: 0.7,
-        max_tokens: 4000
+        max_tokens: 5000,
+        response_format: { type: "json_object" }
       })
     });
 
@@ -158,7 +164,7 @@ Make sure the passage is interesting, the questions are well-written, and the di
       throw new Error('No content received from OpenAI');
     }
 
-    // Extract JSON from response (handle markdown code blocks)
+    // Parse JSON content (with response_format: json_object, it should be clean JSON)
     let jsonContent = content.trim();
     if (jsonContent.startsWith('```json')) {
       jsonContent = jsonContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
@@ -166,11 +172,21 @@ Make sure the passage is interesting, the questions are well-written, and the di
       jsonContent = jsonContent.replace(/```\n?/g, '');
     }
 
-    const generated = JSON.parse(jsonContent);
+    let generated;
+    try {
+      generated = JSON.parse(jsonContent);
+    } catch (parseError) {
+      throw new Error(`Failed to parse JSON response from AI: ${parseError}`);
+    }
 
     // Validate and format the response
     if (!generated.title || !generated.content || !generated.questions || !Array.isArray(generated.questions)) {
       throw new Error('Invalid response format from AI');
+    }
+
+    // Validate question count - ACT format requires exactly 15 questions
+    if (generated.questions.length !== 15) {
+      throw new Error(`Expected exactly 15 questions (ACT English format), but received ${generated.questions.length} questions. Please regenerate.`);
     }
 
     // Transform questions to match our Question interface

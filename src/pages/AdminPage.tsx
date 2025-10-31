@@ -309,7 +309,7 @@ export default function AdminPage() {
         <div className="upload-section" style={{ marginBottom: '2rem' }}>
           <h2><i className="fas fa-robot"></i> Generate Passage with AI</h2>
           <p style={{ marginBottom: '1.5rem', color: '#666' }}>
-            Use AI to automatically generate a complete passage with questions. Every question will include both an actual test question (hardText) and a helper/tutoring version (easyText) that explicitly names the grammar rule. The generated passage will be set to inactive so you can review it before making it available to students.
+            Use AI to automatically generate a complete passage with exactly 15 questions (ACT English format). Every question will include both an actual test question (hardText) and a helper/tutoring version (easyText) that explicitly names the grammar rule. The generated passage will be set to inactive so you can review it before making it available to students.
           </p>
           
           <div className="form-row">
