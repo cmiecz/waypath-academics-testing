@@ -171,6 +171,12 @@
   padding: 40px 32px;
   background-color: #f5f5f7;
   border-left: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.question-side > * {
+  flex-shrink: 0;
 }
 
 /* Question Header */
@@ -185,6 +191,9 @@
   margin: 0;
   line-height: 1.5;
   letter-spacing: -0.2px;
+  min-height: 60px; /* Reserve space to prevent jumping */
+  padding-bottom: 8px; /* Extra padding for longer text */
+  display: block;
 }
 
 /* Tutor Help Button - Subtle Design */
@@ -225,6 +234,7 @@
 .tutor-help-btn svg {
   transition: all 0.2s ease;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .tutor-help-btn.active {
