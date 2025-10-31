@@ -24,6 +24,7 @@ export default function AdminPage() {
   const [aiSuccess, setAiSuccess] = useState('');
   const [generatedPassage, setGeneratedPassage] = useState<Passage | null>(null);
   const [showGeneratedPreview, setShowGeneratedPreview] = useState(false);
+  const [editablePassage, setEditablePassage] = useState<Passage | null>(null);
   
   const navigate = useNavigate();
   const { setUser } = useTestStore();
@@ -201,6 +202,7 @@ export default function AdminPage() {
       });
 
       setGeneratedPassage(passage);
+      setEditablePassage(JSON.parse(JSON.stringify(passage))); // Deep copy for editing
       setShowGeneratedPreview(true);
       
       // Pre-fill the manual upload form with generated content for editing
@@ -239,7 +241,8 @@ export default function AdminPage() {
   };
 
   const handleSaveGeneratedPassage = async () => {
-    if (!generatedPassage) {
+    const passageToSave = editablePassage || generatedPassage;
+    if (!passageToSave) {
       setAiError('No generated passage to save');
       return;
     }
@@ -249,28 +252,33 @@ export default function AdminPage() {
     setAiSuccess('');
 
     try {
+      // Recalculate word count if content was edited
+      const wordCount = passageToSave.content.split(/\s+/).filter(Boolean).length;
+      const estimatedReadingTime = Math.ceil(wordCount / 200) * 60;
+
       const { error: dbError } = await supabase
         .from('passages')
         .insert({
-          id: generatedPassage.id,
-          title: generatedPassage.title,
-          content: generatedPassage.content,
-          subject: generatedPassage.subject,
-          difficulty: generatedPassage.difficulty,
-          questions: generatedPassage.questions,
+          id: passageToSave.id,
+          title: passageToSave.title,
+          content: passageToSave.content,
+          subject: passageToSave.subject,
+          difficulty: passageToSave.difficulty,
+          questions: passageToSave.questions,
           is_active: false, // Default to inactive for admin review
-          word_count: generatedPassage.wordCount,
-          estimated_reading_time: generatedPassage.estimatedReadingTime,
-          passage_type: generatedPassage.passageType,
-          topic: generatedPassage.topic
+          word_count: wordCount,
+          estimated_reading_time: estimatedReadingTime,
+          passage_type: passageToSave.passageType,
+          topic: passageToSave.topic
         });
 
       if (dbError) {
         throw new Error(`Database error: ${dbError.message}`);
       }
 
-      setAiSuccess(`Passage "${generatedPassage.title}" saved successfully! It is set to inactive - you can activate it in Passage Management.`);
+      setAiSuccess(`Passage "${passageToSave.title}" saved successfully! It is set to inactive - you can activate it in Passage Management.`);
       setGeneratedPassage(null);
+      setEditablePassage(null);
       setShowGeneratedPreview(false);
     } catch (err: any) {
       console.error('Save error:', err);
@@ -282,9 +290,38 @@ export default function AdminPage() {
 
   const handleGenerateAnother = () => {
     setGeneratedPassage(null);
+    setEditablePassage(null);
     setShowGeneratedPreview(false);
     setAiSuccess('');
     handleGeneratePassage();
+  };
+
+  const updateEditablePassage = (updates: Partial<Passage>) => {
+    if (editablePassage) {
+      setEditablePassage({ ...editablePassage, ...updates });
+    }
+  };
+
+  const updateQuestion = (questionIndex: number, questionUpdates: Partial<Question>) => {
+    if (editablePassage) {
+      const updatedQuestions = [...editablePassage.questions];
+      updatedQuestions[questionIndex] = { ...updatedQuestions[questionIndex], ...questionUpdates };
+      setEditablePassage({ ...editablePassage, questions: updatedQuestions });
+    }
+  };
+
+  const updateQuestionOption = (questionIndex: number, option: 'A' | 'B' | 'C' | 'D', value: string) => {
+    if (editablePassage) {
+      const updatedQuestions = [...editablePassage.questions];
+      updatedQuestions[questionIndex] = {
+        ...updatedQuestions[questionIndex],
+        options: {
+          ...updatedQuestions[questionIndex].options,
+          [option]: value
+        }
+      };
+      setEditablePassage({ ...editablePassage, questions: updatedQuestions });
+    }
   };
 
   return (
@@ -366,7 +403,7 @@ export default function AdminPage() {
             </button>
           )}
 
-          {showGeneratedPreview && generatedPassage && (
+          {showGeneratedPreview && editablePassage && (
             <div style={{ 
               marginTop: '2rem', 
               padding: '1.5rem', 
@@ -375,35 +412,157 @@ export default function AdminPage() {
               border: '2px solid #667eea'
             }}>
               <h3 style={{ marginTop: 0, color: '#667eea' }}>
-                <i className="fas fa-eye"></i> Generated Passage Preview
+                <i className="fas fa-edit"></i> Review & Edit Generated Passage
               </h3>
               
-              <div style={{ marginBottom: '1rem' }}>
-                <strong>Title:</strong> {generatedPassage.title}
+              {/* Title Editor */}
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label htmlFor="editable-title"><strong>Title:</strong></label>
+                <input
+                  id="editable-title"
+                  type="text"
+                  value={editablePassage.title}
+                  onChange={(e) => updateEditablePassage({ title: e.target.value })}
+                  className="form-control"
+                  style={{ width: '100%' }}
+                />
               </div>
               
-              <div style={{ marginBottom: '1rem' }}>
-                <strong>Subject:</strong> {generatedPassage.subject} | 
-                <strong> Questions:</strong> {generatedPassage.questions.length} (all with easyText and hardText versions)
+              <div style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#666' }}>
+                <strong>Subject:</strong> {editablePassage.subject} | 
+                <strong> Questions:</strong> {editablePassage.questions.length} (all with easyText and hardText versions) |
+                <strong> Word Count:</strong> {editablePassage.content.split(/\s+/).filter(Boolean).length}
               </div>
 
-              <div style={{ 
-                marginBottom: '1rem',
-                padding: '1rem',
-                backgroundColor: 'white',
-                borderRadius: '4px',
-                maxHeight: '200px',
-                overflowY: 'auto',
-                fontSize: '0.9rem',
-                lineHeight: '1.5'
-              }}>
-                <strong>Passage Content (first 500 chars):</strong>
-                <div style={{ marginTop: '0.5rem' }}>
-                  {generatedPassage.content.substring(0, 500)}...
+              {/* Full Passage Editor */}
+              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                <label htmlFor="editable-content"><strong>Passage Content (Full Text - Editable):</strong></label>
+                <textarea
+                  id="editable-content"
+                  value={editablePassage.content}
+                  onChange={(e) => updateEditablePassage({ content: e.target.value })}
+                  className="form-control"
+                  style={{ 
+                    width: '100%',
+                    minHeight: '300px',
+                    fontFamily: 'monospace',
+                    fontSize: '0.9rem',
+                    lineHeight: '1.6',
+                    padding: '1rem'
+                  }}
+                />
+              </div>
+
+              {/* Questions Editor */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h4 style={{ marginBottom: '1rem', color: '#667eea' }}>
+                  <i className="fas fa-question-circle"></i> Questions ({editablePassage.questions.length})
+                </h4>
+                
+                <div style={{ maxHeight: '600px', overflowY: 'auto', border: '1px solid #ddd', borderRadius: '4px', padding: '1rem', backgroundColor: 'white' }}>
+                  {editablePassage.questions.map((question, index) => (
+                    <div 
+                      key={question.id || index}
+                      style={{ 
+                        marginBottom: '2rem', 
+                        padding: '1rem', 
+                        border: '1px solid #e0e0e0', 
+                        borderRadius: '4px',
+                        backgroundColor: '#fafafa'
+                      }}
+                    >
+                      <div style={{ marginBottom: '0.5rem', fontWeight: 'bold', color: '#667eea' }}>
+                        Question {question.questionNumber}
+                      </div>
+
+                      {/* Default Text */}
+                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Default Text:</label>
+                        <input
+                          type="text"
+                          value={question.text || ''}
+                          onChange={(e) => updateQuestion(index, { text: e.target.value })}
+                          className="form-control"
+                          style={{ fontSize: '0.9rem' }}
+                        />
+                      </div>
+
+                      {/* Easy Text (Tutor Help) */}
+                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#48bb78' }}>Easy Text (Tutor Help):</label>
+                        <textarea
+                          value={question.easyText || ''}
+                          onChange={(e) => updateQuestion(index, { easyText: e.target.value })}
+                          className="form-control"
+                          style={{ fontSize: '0.9rem', minHeight: '60px' }}
+                          placeholder="Explicitly names the grammar rule or concept"
+                        />
+                      </div>
+
+                      {/* Hard Text (Actual Question) */}
+                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#e53e3e' }}>Hard Text (Actual Question):</label>
+                        <textarea
+                          value={question.hardText || ''}
+                          onChange={(e) => updateQuestion(index, { hardText: e.target.value })}
+                          className="form-control"
+                          style={{ fontSize: '0.9rem', minHeight: '60px' }}
+                          placeholder="Broad/interpretive format like real ACT questions"
+                        />
+                      </div>
+
+                      {/* Options */}
+                      <div style={{ marginBottom: '0.75rem' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Options:</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.5rem' }}>
+                          {(['A', 'B', 'C', 'D'] as const).map(option => (
+                            <div key={option} className="form-group" style={{ marginBottom: '0' }}>
+                              <label style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Option {option}:</label>
+                              <input
+                                type="text"
+                                value={question.options[option] || ''}
+                                onChange={(e) => updateQuestionOption(index, option, e.target.value)}
+                                className="form-control"
+                                style={{ fontSize: '0.85rem' }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Correct Answer */}
+                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Correct Answer:</label>
+                        <select
+                          value={question.correctAnswer}
+                          onChange={(e) => updateQuestion(index, { correctAnswer: e.target.value as 'A' | 'B' | 'C' | 'D' })}
+                          className="form-control"
+                          style={{ width: '100px', fontSize: '0.9rem' }}
+                        >
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="C">C</option>
+                          <option value="D">D</option>
+                        </select>
+                      </div>
+
+                      {/* Explanation */}
+                      <div className="form-group" style={{ marginBottom: '0' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Explanation:</label>
+                        <textarea
+                          value={question.explanation || ''}
+                          onChange={(e) => updateQuestion(index, { explanation: e.target.value })}
+                          className="form-control"
+                          style={{ fontSize: '0.9rem', minHeight: '60px' }}
+                          placeholder="Why this answer is correct"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
                 <button 
                   onClick={handleSaveGeneratedPassage} 
                   className="btn-submit"
@@ -416,7 +575,7 @@ export default function AdminPage() {
                     </>
                   ) : (
                     <>
-                      <i className="fas fa-save"></i> Save Generated Passage
+                      <i className="fas fa-save"></i> Save Passage
                     </>
                   )}
                 </button>
@@ -434,6 +593,7 @@ export default function AdminPage() {
                   onClick={() => {
                     setShowGeneratedPreview(false);
                     setGeneratedPassage(null);
+                    setEditablePassage(null);
                   }} 
                   className="btn-secondary"
                   disabled={aiLoading}
@@ -448,7 +608,7 @@ export default function AdminPage() {
                 color: '#666',
                 fontStyle: 'italic'
               }}>
-                Note: The generated content has been pre-filled in the manual upload form below. You can edit it there before saving, or save the generated version directly above.
+                💡 Edit the passage and questions above, then click "Save Passage" to save your changes. The passage will be saved as inactive for review.
               </p>
             </div>
           )}
