@@ -173,11 +173,29 @@
   border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+/* Question Header with Tutor Mode Toggle */
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.question-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  flex: 1;
+}
+
 /* Tutor Mode Toggle */
 .tutor-mode-toggle {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .btn-tutor {
@@ -194,6 +212,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .btn-tutor:hover {
@@ -212,15 +231,6 @@
 .btn-tutor.active:hover {
   background-color: #2fb350;
   border-color: #2fb350;
-}
-
-.question-text {
-  font-size: 17px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0 0 24px 0;
-  line-height: 1.5;
-  letter-spacing: -0.2px;
 }
 
 .options {

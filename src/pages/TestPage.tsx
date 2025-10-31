@@ -74,6 +74,11 @@ export default function TestPage() {
     };
   }, [currentPassage]);
 
+  // Reset tutor mode when question changes
+  useEffect(() => {
+    setTutorModeActive(false);
+  }, [currentQuestionIndex]);
+
   // Auto-scroll to highlighted anchor when question changes
   useEffect(() => {
     if (highlightedAnchorRef.current && currentPassage) {
@@ -365,20 +370,21 @@ export default function TestPage() {
 
         {/* Question - Right Side (50%) */}
         <div className="question-side">
-          {testMode === 'practice' && currentQuestion.easyText && (
-            <div className="tutor-mode-toggle">
-              <button 
-                onClick={handleTutorModeToggle}
-                className={`btn-tutor ${tutorModeActive ? 'active' : ''}`}
-              >
-                {tutorModeActive ? '📖 Viewing Tutor Help' : '💡 Need Help?'}
-              </button>
-            </div>
-          )}
-          
-          <h3 className="question-text">
-            {currentQuestion.questionNumber}. {displayedQuestionText}
-          </h3>
+          <div className="question-header">
+            <h3 className="question-text">
+              {currentQuestion.questionNumber}. {displayedQuestionText}
+            </h3>
+            {testMode === 'practice' && currentQuestion.easyText && (
+              <div className="tutor-mode-toggle">
+                <button 
+                  onClick={handleTutorModeToggle}
+                  className={`btn-tutor ${tutorModeActive ? 'active' : ''}`}
+                >
+                  {tutorModeActive ? '📖 Viewing Tutor Help' : '💡 Need Help?'}
+                </button>
+              </div>
+            )}
+          </div>
 
           <div className="options">
             {Object.entries(currentQuestion.options).map(([letter, option]) => (
