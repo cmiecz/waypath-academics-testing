@@ -22,6 +22,8 @@ interface SavedSessionState {
   questionTimes: Record<string, number>;
   tutorModeUsage: Record<string, boolean>;
   sessionId: string;
+  passageId?: string; // ID of the first/current passage in the session
+  subject?: string; // Subject of the session
 }
 
 type Listener = () => void;
@@ -134,6 +136,9 @@ class Store {
   ) {
     if (!this.state.currentSession || this.state.passages.length === 0) return;
 
+    // Get the current passage ID (first passage in the session)
+    const currentPassage = this.state.passages[this.state.currentSession.currentPassageIndex || 0];
+
     const savedState: SavedSessionState = {
       currentQuestionIndex: questionIndex ?? (this.state.currentSession.currentPassageIndex || 0),
       answers: answers || {},
@@ -144,7 +149,9 @@ class Store {
       questionStartTimes: questionStartTimes || {},
       questionTimes: questionTimes || {},
       tutorModeUsage: tutorModeUsage || {},
-      sessionId: this.state.currentSession.id
+      sessionId: this.state.currentSession.id,
+      passageId: currentPassage?.id,
+      subject: this.state.currentSession.subject
     };
 
     try {

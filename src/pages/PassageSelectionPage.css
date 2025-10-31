@@ -62,103 +62,109 @@
   font-weight: 500;
 }
 
-.resume-banner {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #f59e0b;
-  border-radius: 16px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+/* Incomplete Session Ribbon on Passage Card */
+.passage-card.has-incomplete {
+  position: relative;
+  border-color: #e5e7eb;
 }
 
-.resume-banner-content {
+.incomplete-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: 6px;
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 14px;
+  z-index: 1;
 }
 
-.resume-info {
+.ribbon-icon {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+.ribbon-text {
+  color: #6b7280;
+}
+
+.incomplete-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.incomplete-info {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex: 1;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+  font-weight: 500;
 }
 
-.resume-info i {
-  font-size: 24px;
-  color: #d97706;
-  margin-top: 2px;
-}
-
-.resume-info h3 {
-  margin: 0 0 4px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #92400e;
-}
-
-.resume-info p {
-  margin: 0;
-  font-size: 14px;
-  color: #78350f;
-  line-height: 1.5;
-}
-
-.resume-banner-actions {
+.incomplete-buttons {
   display: flex;
-  gap: 12px;
-  flex-shrink: 0;
+  gap: 8px;
 }
 
-.btn-resume {
+.btn-resume-small {
   background: #10b981;
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
 }
 
-.btn-resume:hover {
+.btn-resume-small:hover {
   background: #059669;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.btn-resume i {
-  font-size: 14px;
+.btn-resume-small i {
+  font-size: 12px;
 }
 
-.btn-start-over {
+.btn-start-over-small {
   background: white;
-  color: #d97706;
-  border: 2px solid #f59e0b;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-size: 14px;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
 }
 
-.btn-start-over:hover {
-  background: #fef3c7;
+.btn-start-over-small:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
 }
 
-.btn-start-over i {
-  font-size: 14px;
+.btn-start-over-small i {
+  font-size: 12px;
 }
 
 .passage-selection-content {
@@ -383,25 +389,13 @@
     font-size: 28px;
   }
 
-  .resume-banner {
-    padding: 16px 20px;
-  }
-
-  .resume-banner-content {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-
-  .resume-banner-actions {
-    width: 100%;
+  .incomplete-buttons {
     flex-direction: column;
   }
 
-  .btn-resume,
-  .btn-start-over {
+  .btn-resume-small,
+  .btn-start-over-small {
     width: 100%;
-    justify-content: center;
   }
 
   .passage-selection-content {

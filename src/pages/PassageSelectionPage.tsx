@@ -16,10 +16,9 @@ export default function PassageSelectionPage() {
   const [selectedPassages, setSelectedPassages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [hasSavedSession, setHasSavedSession] = useState(false);
   const [savedSessionInfo, setSavedSessionInfo] = useState<{
+    passageId: string;
     questionIndex: number;
-    totalQuestions: number;
     answersCount: number;
   } | null>(null);
   const navigate = useNavigate();
@@ -73,29 +72,30 @@ export default function PassageSelectionPage() {
     }
   }, [subject]);
 
-  // Check for saved session
+  // Check for saved session matching this subject
   useEffect(() => {
     try {
       const saved = localStorage.getItem('act_prep_saved_session');
       if (saved) {
         const savedState = JSON.parse(saved);
-        // Check if saved session exists
-        setHasSavedSession(true);
-        setSavedSessionInfo({
-          questionIndex: savedState.currentQuestionIndex || 0,
-          totalQuestions: Object.keys(savedState.answers || {}).length > 0 
-            ? Math.max(...Object.keys(savedState.answers || {}).map((_, i) => i + 1), savedState.currentQuestionIndex || 0) 
-            : (savedState.currentQuestionIndex || 0) + 1,
-          answersCount: Object.keys(savedState.answers || {}).length
-        });
+        // Check if saved session is for this subject and has a passage ID
+        if (savedState.subject === subject && savedState.passageId) {
+          setSavedSessionInfo({
+            passageId: savedState.passageId,
+            questionIndex: savedState.currentQuestionIndex || 0,
+            answersCount: Object.keys(savedState.answers || {}).length
+          });
+        } else {
+          setSavedSessionInfo(null);
+        }
       } else {
-        setHasSavedSession(false);
+        setSavedSessionInfo(null);
       }
     } catch (error) {
       console.error('Error checking saved session:', error);
-      setHasSavedSession(false);
+      setSavedSessionInfo(null);
     }
-  }, [subject]);
+  }, [subject, passages]);
 
   useEffect(() => {
     // Check if user is logged in
@@ -152,11 +152,12 @@ export default function PassageSelectionPage() {
     }
   };
 
-  const handleStartOver = () => {
+  const handleStartOver = (passageId?: string) => {
     // Clear saved session
     testStore.clearSavedSession();
-    setHasSavedSession(false);
-    setSavedSessionInfo(null);
+    if (passageId === savedSessionInfo?.passageId) {
+      setSavedSessionInfo(null);
+    }
     setError('');
   };
 
@@ -223,31 +224,6 @@ export default function PassageSelectionPage() {
           </div>
         )}
 
-        {hasSavedSession && savedSessionInfo && (
-          <div className="resume-banner">
-            <div className="resume-banner-content">
-              <div className="resume-info">
-                <i className="fas fa-history"></i>
-                <div>
-                  <h3>Incomplete Session Found</h3>
-                  <p>
-                    You have a saved session with {savedSessionInfo.answersCount} answered question{savedSessionInfo.answersCount !== 1 ? 's' : ''} 
-                    {savedSessionInfo.questionIndex > 0 && ` (on question ${savedSessionInfo.questionIndex + 1})`}
-                  </p>
-                </div>
-              </div>
-              <div className="resume-banner-actions">
-                <button onClick={handleResumeTest} className="btn-resume">
-                  <i className="fas fa-play"></i> Resume
-                </button>
-                <button onClick={handleStartOver} className="btn-start-over">
-                  <i className="fas fa-redo"></i> Start Over
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className="passage-selection-content">
           <div className="selection-controls">
             <div className="selection-info">
@@ -262,27 +238,67 @@ export default function PassageSelectionPage() {
           </div>
 
           <div className="passages-grid">
-            {passages.map(passage => (
-              <div 
-                key={passage.id} 
-                className={`passage-card ${selectedPassages.includes(passage.id) ? 'selected' : ''}`}
-                onClick={() => handlePassageToggle(passage.id)}
-              >
-                <div className="passage-header">
-                  <h3>{passage.title}</h3>
-                  <div className="passage-meta">
-                    <span className="difficulty-badge">{passage.difficulty}</span>
-                    <span className="questions-count">{passage.questions.length} questions</span>
+            {passages.map(passage => {
+              const hasIncompleteSession = savedSessionInfo?.passageId === passage.id;
+              return (
+                <div 
+                  key={passage.id} 
+                  className={`passage-card ${selectedPassages.includes(passage.id) ? 'selected' : ''} ${hasIncompleteSession ? 'has-incomplete' : ''}`}
+                  onClick={() => !hasIncompleteSession && handlePassageToggle(passage.id)}
+                >
+                  {hasIncompleteSession && (
+                    <div className="incomplete-ribbon">
+                      <span className="ribbon-icon"><i className="fas fa-clock"></i></span>
+                      <span className="ribbon-text">Incomplete Session</span>
+                    </div>
+                  )}
+                  <div className="passage-header">
+                    <h3>{passage.title}</h3>
+                    <div className="passage-meta">
+                      <span className="difficulty-badge">{passage.difficulty}</span>
+                      <span className="questions-count">{passage.questions.length} questions</span>
+                    </div>
                   </div>
+                  <div className="passage-preview">
+                    {passage.content.substring(0, 150)}...
+                  </div>
+                  {hasIncompleteSession ? (
+                    <div className="incomplete-actions">
+                      <div className="incomplete-info">
+                        <span>{savedSessionInfo.answersCount} answered</span>
+                        {savedSessionInfo.questionIndex > 0 && (
+                          <span>• Question {savedSessionInfo.questionIndex + 1}</span>
+                        )}
+                      </div>
+                      <div className="incomplete-buttons">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleResumeTest();
+                          }}
+                          className="btn-resume-small"
+                        >
+                          <i className="fas fa-play"></i> Resume
+                        </button>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartOver(passage.id);
+                          }}
+                          className="btn-start-over-small"
+                        >
+                          <i className="fas fa-redo"></i> Start Over
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="selection-indicator">
+                      {selectedPassages.includes(passage.id) ? <><i className="fas fa-check"></i> Selected</> : 'Click to select'}
+                    </div>
+                  )}
                 </div>
-                <div className="passage-preview">
-                  {passage.content.substring(0, 150)}...
-                </div>
-                <div className="selection-indicator">
-                  {selectedPassages.includes(passage.id) ? <><i className="fas fa-check"></i> Selected</> : 'Click to select'}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {passages.length === 0 && !loading && (
@@ -300,7 +316,7 @@ export default function PassageSelectionPage() {
             disabled={selectedPassages.length === 0}
             className="btn-start-test"
           >
-            {hasSavedSession ? 'Start New' : 'Start'} {testMode === 'practice' ? 'Practice' : 'Test'} ({selectedPassages.length} passages)
+            Start {testMode === 'practice' ? 'Practice' : 'Test'} ({selectedPassages.length} passages)
           </button>
         </div>
       </div>
