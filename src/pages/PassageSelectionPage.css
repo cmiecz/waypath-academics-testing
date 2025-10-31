@@ -62,6 +62,105 @@
   font-weight: 500;
 }
 
+.resume-banner {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.resume-banner-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.resume-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+}
+
+.resume-info i {
+  font-size: 24px;
+  color: #d97706;
+  margin-top: 2px;
+}
+
+.resume-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.resume-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.resume-banner-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.btn-resume {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-resume:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-resume i {
+  font-size: 14px;
+}
+
+.btn-start-over {
+  background: white;
+  color: #d97706;
+  border: 2px solid #f59e0b;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-start-over:hover {
+  background: #fef3c7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.btn-start-over i {
+  font-size: 14px;
+}
+
 .passage-selection-content {
   background: white;
   border-radius: 20px;
@@ -282,6 +381,27 @@
 
   .header-content h1 {
     font-size: 28px;
+  }
+
+  .resume-banner {
+    padding: 16px 20px;
+  }
+
+  .resume-banner-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .resume-banner-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-resume,
+  .btn-start-over {
+    width: 100%;
+    justify-content: center;
   }
 
   .passage-selection-content {

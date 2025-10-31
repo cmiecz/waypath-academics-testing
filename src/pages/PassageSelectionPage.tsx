@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../api/supabase';
 import { Passage } from '../types/act';
 import { useTestStore } from '../hooks/useTestStore';
+import { testStore } from '../store/testStore';
 import './PassageSelectionPage.css';
 
 interface LocationState {
@@ -15,6 +16,12 @@ export default function PassageSelectionPage() {
   const [selectedPassages, setSelectedPassages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [hasSavedSession, setHasSavedSession] = useState(false);
+  const [savedSessionInfo, setSavedSessionInfo] = useState<{
+    questionIndex: number;
+    totalQuestions: number;
+    answersCount: number;
+  } | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { startTestSession, setPassages: setTestPassages, currentUser } = useTestStore();
@@ -66,6 +73,30 @@ export default function PassageSelectionPage() {
     }
   }, [subject]);
 
+  // Check for saved session
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('act_prep_saved_session');
+      if (saved) {
+        const savedState = JSON.parse(saved);
+        // Check if saved session exists
+        setHasSavedSession(true);
+        setSavedSessionInfo({
+          questionIndex: savedState.currentQuestionIndex || 0,
+          totalQuestions: Object.keys(savedState.answers || {}).length > 0 
+            ? Math.max(...Object.keys(savedState.answers || {}).map((_, i) => i + 1), savedState.currentQuestionIndex || 0) 
+            : (savedState.currentQuestionIndex || 0) + 1,
+          answersCount: Object.keys(savedState.answers || {}).length
+        });
+      } else {
+        setHasSavedSession(false);
+      }
+    } catch (error) {
+      console.error('Error checking saved session:', error);
+      setHasSavedSession(false);
+    }
+  }, [subject]);
+
   useEffect(() => {
     // Check if user is logged in
     if (!currentUser) {
@@ -91,6 +122,44 @@ export default function PassageSelectionPage() {
     }
   };
 
+  const handleResumeTest = async () => {
+    if (!currentUser) {
+      setError('Please log in to resume test');
+      return;
+    }
+
+    try {
+      // Resume existing session - use saved passages if available
+      const saved = localStorage.getItem('act_prep_saved_session');
+      if (saved) {
+        const savedState = JSON.parse(saved);
+        
+        // Try to restore passages from saved state or use selected passages
+        if (passages.length > 0) {
+          // For now, use all passages (or we could save passage IDs in the future)
+          setTestPassages(passages);
+        }
+
+        // Resume session (will reuse session ID from saved state)
+        startTestSession(subject);
+        
+        // Navigate to test with mode information
+        navigate('/test', { state: { testMode } });
+      }
+    } catch (error) {
+      console.error('Error resuming test:', error);
+      setError('Failed to resume test');
+    }
+  };
+
+  const handleStartOver = () => {
+    // Clear saved session
+    testStore.clearSavedSession();
+    setHasSavedSession(false);
+    setSavedSessionInfo(null);
+    setError('');
+  };
+
   const handleStartTest = async () => {
     if (selectedPassages.length === 0) {
       setError('Please select at least one passage');
@@ -103,10 +172,13 @@ export default function PassageSelectionPage() {
     }
 
     try {
+      // Clear any existing saved session when starting new
+      testStore.clearSavedSession();
+      
       const selectedPassageData = passages.filter(p => selectedPassages.includes(p.id));
       setTestPassages(selectedPassageData);
 
-      // Start or resume session (will reuse session ID if saved state exists)
+      // Start new session (cleared saved state, so will create new session ID)
       startTestSession(subject);
       
       // Navigate to test with mode information
@@ -148,6 +220,31 @@ export default function PassageSelectionPage() {
         {error && (
           <div className="error-message">
             {error}
+          </div>
+        )}
+
+        {hasSavedSession && savedSessionInfo && (
+          <div className="resume-banner">
+            <div className="resume-banner-content">
+              <div className="resume-info">
+                <i className="fas fa-history"></i>
+                <div>
+                  <h3>Incomplete Session Found</h3>
+                  <p>
+                    You have a saved session with {savedSessionInfo.answersCount} answered question{savedSessionInfo.answersCount !== 1 ? 's' : ''} 
+                    {savedSessionInfo.questionIndex > 0 && ` (on question ${savedSessionInfo.questionIndex + 1})`}
+                  </p>
+                </div>
+              </div>
+              <div className="resume-banner-actions">
+                <button onClick={handleResumeTest} className="btn-resume">
+                  <i className="fas fa-play"></i> Resume
+                </button>
+                <button onClick={handleStartOver} className="btn-start-over">
+                  <i className="fas fa-redo"></i> Start Over
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -203,7 +300,7 @@ export default function PassageSelectionPage() {
             disabled={selectedPassages.length === 0}
             className="btn-start-test"
           >
-            Start {testMode === 'practice' ? 'Practice' : 'Test'} ({selectedPassages.length} passages)
+            {hasSavedSession ? 'Start New' : 'Start'} {testMode === 'practice' ? 'Practice' : 'Test'} ({selectedPassages.length} passages)
           </button>
         </div>
       </div>
