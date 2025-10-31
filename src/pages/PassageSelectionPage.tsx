@@ -106,6 +106,7 @@ export default function PassageSelectionPage() {
       const selectedPassageData = passages.filter(p => selectedPassages.includes(p.id));
       setTestPassages(selectedPassageData);
 
+      // Start or resume session (will reuse session ID if saved state exists)
       startTestSession(subject);
       
       // Navigate to test with mode information

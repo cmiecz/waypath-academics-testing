@@ -67,6 +67,43 @@ class Store {
       throw new Error('No user logged in');
     }
 
+    // Check if there's a saved session we can resume
+    try {
+      const saved = localStorage.getItem(SESSION_STORAGE_KEY);
+      if (saved && this.state.passages.length > 0) {
+        const savedState: SavedSessionState = JSON.parse(saved);
+        
+        // Reuse the saved session ID to maintain continuity
+        const existingSession: TestSession = {
+          id: savedState.sessionId,
+          userId: this.state.currentUser.id,
+          subject,
+          startTime: new Date().toISOString(),
+          currentPassageIndex: 0,
+          completed: false
+        };
+
+        // Restore timer state from saved state
+        this.state = { 
+          ...this.state, 
+          currentSession: existingSession, 
+          sessionTime: savedState.sessionTime,
+          timerRunning: savedState.timerRunning 
+        };
+        this.notifyListeners();
+        console.log('Resuming existing session:', savedState.sessionId);
+        return existingSession;
+      }
+    } catch (error) {
+      console.error('Error checking for saved session:', error);
+      // Continue to create new session
+    }
+
+    // Create new session
+    if (!this.state.currentUser) {
+      throw new Error('No user logged in');
+    }
+
     const session: TestSession = {
       id: `session_${Date.now()}`,
       userId: this.state.currentUser.id,
@@ -79,6 +116,7 @@ class Store {
     this.state = { ...this.state, currentSession: session, sessionTime: 2100, timerRunning: true };
     this.saveSessionState();
     this.notifyListeners();
+    console.log('Created new session:', session.id);
     return session;
   }
 

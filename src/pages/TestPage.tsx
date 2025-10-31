@@ -96,17 +96,19 @@ export default function TestPage() {
     if (currentSession && currentPassage && passages.length > 0) {
       const savedState = testStore.restoreSessionState();
       if (savedState && savedState.sessionId === currentSession.id) {
-        console.log('Restoring saved session state...');
+        console.log('Restoring saved session state...', savedState);
         setCurrentQuestionIndex(savedState.currentQuestionIndex || 0);
         setAnswers(savedState.answers || {});
         setQuestionStartTimes(savedState.questionStartTimes || {});
         setQuestionTimes(savedState.questionTimes || {});
         setTutorModeUsage(savedState.tutorModeUsage || {});
         
-        // Restore timer state - only if timer is paused (don't auto-resume)
+        // Restore timer state
         if (!savedState.timerRunning) {
           testStore.pauseTimer();
         }
+      } else if (savedState) {
+        console.log('Saved state exists but session ID mismatch. Saved:', savedState.sessionId, 'Current:', currentSession.id);
       }
     }
 
@@ -129,7 +131,7 @@ export default function TestPage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []); // Only run on mount
+  }, [currentSession?.id]); // Run when session ID changes
 
   // Reset tutor mode when question changes
   useEffect(() => {
@@ -377,7 +379,21 @@ export default function TestPage() {
       {/* Header */}
       <div className="test-header">
         <div className="header-left">
-          <button onClick={() => navigate('/test-selection')} className="back-button">
+          <button onClick={() => {
+            // Save state before navigating away
+            if (currentSession && currentPassage) {
+              testStore.saveSessionState(
+                currentQuestionIndex,
+                answers,
+                passageStartTime,
+                readingStartTime,
+                questionStartTimes,
+                questionTimes,
+                tutorModeUsage
+              );
+            }
+            navigate('/test-selection');
+          }} className="back-button">
             ← Back
           </button>
           <div className="header-info">
