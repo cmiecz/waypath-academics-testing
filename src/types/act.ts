@@ -10,9 +10,8 @@ export interface Question {
   id: string;
   questionNumber: number;
   text: string; // Kept for backward compatibility
-  easyText?: string; // Easy version: explicitly names grammar rule
-  mediumText?: string; // Medium version: moderately specific
-  hardText?: string; // Hard version: broad/interpretive
+  easyText?: string; // Tutoring help version: explicitly names grammar rule
+  hardText?: string; // Actual question: broad/interpretive
   options: {
     A: string;
     B: string;
@@ -86,6 +85,7 @@ export interface TestAttempt {
   passageType?: PassageType;
   readingTime?: number; // time spent reading passage
   answeringTime?: number; // time spent answering questions
+  tutorModeUsage?: Record<string, boolean>; // questionId -> whether tutor mode was used
 }
 
 export interface QuestionAttempt {
@@ -98,6 +98,7 @@ export interface QuestionAttempt {
   timeSpent: number; // in seconds
   difficulty: 'Easy' | 'Medium' | 'Hard';
   passageType: PassageType;
+  tutorModeUsed?: boolean; // whether student used tutor mode for this question
 }
 
 export interface TestSession {
@@ -108,7 +109,6 @@ export interface TestSession {
   startTime: string;
   endTime?: string;
   completed: boolean;
-  difficultyFilter?: 'all' | 'Easy' | 'Medium' | 'Hard';
 }
 
 export interface TestState {

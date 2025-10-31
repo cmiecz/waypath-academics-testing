@@ -59,20 +59,19 @@ export default function AdminPage() {
           id: `q${i}`,
           questionNumber: parseInt(fields[0]) || i,
           text: fields[1].trim(),
-          // Optional: Easy/Medium/Hard text versions
+          // Optional: Easy text (tutoring help) and Hard text (actual question)
           easyText: fields[2]?.trim() || undefined,
-          mediumText: fields[3]?.trim() || undefined,
-          hardText: fields[4]?.trim() || undefined,
+          hardText: fields[3]?.trim() || fields[1].trim(), // Use default text if hardText not provided
           options: {
-            A: fields[5].trim(),
-            B: fields[6].trim(),
-            C: fields[7].trim(),
-            D: fields[8].trim()
+            A: fields[4].trim(),
+            B: fields[5].trim(),
+            C: fields[6].trim(),
+            D: fields[7].trim()
           },
-          correctAnswer: fields[9].trim().toUpperCase() as 'A' | 'B' | 'C' | 'D',
-          explanation: fields[10]?.trim() || 'No explanation provided.',
+          correctAnswer: fields[8].trim().toUpperCase() as 'A' | 'B' | 'C' | 'D',
+          explanation: fields[9]?.trim() || 'No explanation provided.',
           // Optional questionType (defaults to 'detail' if not provided)
-          questionType: fields[11]?.trim() as any || 'detail'
+          questionType: fields[10]?.trim() as any || 'detail'
         };
         questions.push(question);
       }
@@ -332,9 +331,8 @@ export default function AdminPage() {
               <ol>
                 <li><code>Question Number</code> - The question number (1, 2, 3...)</li>
                 <li><code>Default Question Text</code> - The default question text (fallback)</li>
-                <li><code>Easy Text</code> - Easy version: explicitly names grammar rule (optional)</li>
-                <li><code>Medium Text</code> - Medium version: moderately specific (optional)</li>
-                <li><code>Hard Text</code> - Hard version: broad/interpretive (optional)</li>
+                <li><code>Easy Text (Tutor Help)</code> - Tutoring help version: explicitly names grammar rule (optional)</li>
+                <li><code>Hard Text (Actual Question)</code> - The actual test question: broad/interpretive (optional, defaults to Default Text)</li>
                 <li><code>Option A</code> - Answer choice A</li>
                 <li><code>Option B</code> - Answer choice B</li>
                 <li><code>Option C</code> - Answer choice C</li>
@@ -344,10 +342,12 @@ export default function AdminPage() {
                 <li><code>Question Type</code> - Type like detail, inference, structure, etc. (optional)</li>
               </ol>
               
+              <strong>Note:</strong> In Practice Mode, students can toggle between the actual question (Hard Text) and tutoring help (Easy Text) using the "Need Help?" button.
+              
               <strong>Example CSV:</strong>
-              <pre>{`Question Number,Default Text,Easy Text,Medium Text,Hard Text,Option A,Option B,Option C,Option D,Correct Answer,Explanation,Question Type
-1,"Which transition best introduces this sentence?","Which transitional phrase correctly indicates a temporary time period?","Which transition best maintains clarity?","Which choice is most effective?","No Change","Now and then","Later","Occasionally","A","'For now' signals a temporary emotional shift.","structure"
-2,"Which choice uses a possessive pronoun?","Which choice correctly uses a possessive pronoun to show ownership?","Which choice maintains proper grammar?","Which choice is correct?","No Change","they have","whom have","who's","A","'Whose' is the correct possessive pronoun.","vocabulary"`}</pre>
+              <pre>{`Question Number,Default Text,Easy Text (Tutor Help),Hard Text (Actual),Option A,Option B,Option C,Option D,Correct Answer,Explanation,Question Type
+1,"Which transition best introduces this sentence?","Which transitional phrase correctly indicates a temporary time period?","Which choice is most effective?","No Change","Now and then","Later","Occasionally","A","'For now' signals a temporary emotional shift.","structure"
+2,"Which choice uses a possessive pronoun?","Which choice correctly uses a possessive pronoun to show ownership?","Which choice is correct?","No Change","they have","whom have","who's","A","'Whose' is the correct possessive pronoun.","vocabulary"`}</pre>
             </div>
           </div>
 

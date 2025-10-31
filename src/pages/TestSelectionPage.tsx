@@ -8,16 +8,14 @@ export default function TestSelectionPage() {
   const { currentUser, setUser } = useTestStore();
   const navigate = useNavigate();
   const [selectedTestMode, setSelectedTestMode] = useState<'practice' | 'test'>('practice');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all');
 
   const handleSubjectSelect = async (subject: 'English' | 'Math' | 'Reading' | 'Science') => {
     try {
-      // Navigate to passage selection with subject, test mode, and difficulty
+      // Navigate to passage selection with subject and test mode
       navigate('/passage-selection', { 
         state: { 
           subject, 
-          testMode: selectedTestMode,
-          difficultyFilter: selectedDifficulty
+          testMode: selectedTestMode
         } 
       });
     } catch (error) {
@@ -79,9 +77,8 @@ export default function TestSelectionPage() {
 
       <div className="test-selection-container">
 
-        {/* Combined Test Mode and Difficulty Selection */}
-        <div className="mode-difficulty-container">
-          {/* Test Mode Toggle */}
+        {/* Test Mode Toggle */}
+        <div className="test-mode-container">
           <div className="test-mode-selection">
             <div className="test-mode-labels">
               <div className="mode-label-container">
@@ -92,7 +89,7 @@ export default function TestSelectionPage() {
                     • Pause between passages<br />
                     • See results after each passage<br />
                     • Review answers and explanations<br />
-                    • Retake passages if needed
+                    • Tutor help available for questions
                   </div>
                 </div>
               </div>
@@ -121,30 +118,6 @@ export default function TestSelectionPage() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Difficulty Filter */}
-          <div className="difficulty-selection">
-            <div className="difficulty-row">
-              <label htmlFor="difficulty-select" className="difficulty-label">Question Difficulty</label>
-              <select 
-                id="difficulty-select"
-                className="difficulty-dropdown"
-                value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value as 'all' | 'Easy' | 'Medium' | 'Hard')}
-              >
-                <option value="all">All Levels</option>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-              <p className="difficulty-description">
-                {selectedDifficulty === 'all' && 'Practice questions of all difficulty levels'}
-                {selectedDifficulty === 'Easy' && 'Specific, direct questions that name grammar concepts'}
-                {selectedDifficulty === 'Medium' && 'Moderately specific questions requiring careful analysis'}
-                {selectedDifficulty === 'Hard' && 'Broad, interpretive questions testing deeper understanding'}
-              </p>
             </div>
           </div>
         </div>

@@ -8,7 +8,6 @@ import './PassageSelectionPage.css';
 interface LocationState {
   subject: 'English' | 'Math' | 'Reading' | 'Science';
   testMode: 'practice' | 'test';
-  difficultyFilter?: 'all' | 'Easy' | 'Medium' | 'Hard';
 }
 
 export default function PassageSelectionPage() {
@@ -20,7 +19,7 @@ export default function PassageSelectionPage() {
   const location = useLocation();
   const { startTestSession, setPassages: setTestPassages, currentUser } = useTestStore();
 
-  const { subject, testMode, difficultyFilter = 'all' } = location.state as LocationState || { subject: 'Reading', testMode: 'practice', difficultyFilter: 'all' };
+  const { subject, testMode } = location.state as LocationState || { subject: 'Reading', testMode: 'practice' };
 
   const loadPassages = useCallback(async () => {
     try {
@@ -107,10 +106,10 @@ export default function PassageSelectionPage() {
       const selectedPassageData = passages.filter(p => selectedPassages.includes(p.id));
       setTestPassages(selectedPassageData);
 
-      startTestSession(subject, difficultyFilter);
+      startTestSession(subject);
       
-      // Navigate to test with mode and difficulty information
-      navigate('/test', { state: { testMode, difficultyFilter } });
+      // Navigate to test with mode information
+      navigate('/test', { state: { testMode } });
     } catch (error) {
       console.error('Error starting test:', error);
       setError('Failed to start test');

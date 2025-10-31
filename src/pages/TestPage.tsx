@@ -23,6 +23,10 @@ export default function TestPage() {
   const [timerVisible, setTimerVisible] = useState(true);
   const highlightedAnchorRef = useRef<HTMLSpanElement>(null);
   
+  // Tutor Mode state
+  const [tutorModeActive, setTutorModeActive] = useState(false);
+  const [tutorModeUsage, setTutorModeUsage] = useState<Record<string, boolean>>({});
+  
   // Analytics tracking
   const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, number>>({});
   const [readingStartTime] = useState(Date.now());
@@ -32,16 +36,15 @@ export default function TestPage() {
   const location = useLocation();
   const currentPassage = getCurrentPassage();
   
-  // Get test mode and difficulty filter from location state
+  // Get test mode from location state
   const testMode = location.state?.testMode || 'practice';
-  const difficultyFilter = currentSession?.difficultyFilter || 'all';
   
-  // Get the appropriate question text based on selected difficulty
-  const getQuestionText = (question: any) => {
-    if (difficultyFilter === 'Easy' && question.easyText) return question.easyText;
-    if (difficultyFilter === 'Medium' && question.mediumText) return question.mediumText;
-    if (difficultyFilter === 'Hard' && question.hardText) return question.hardText;
-    return question.text; // Fallback to default text
+  // Get the displayed question text based on tutor mode
+  const getDisplayedQuestionText = (question: any) => {
+    if (tutorModeActive && question.easyText) {
+      return question.easyText; // Show tutoring help
+    }
+    return question.hardText || question.text; // Show actual question
   };
 
   // Timer
@@ -50,7 +53,6 @@ export default function TestPage() {
       console.log('TestPage mounted - Timer running for passage:', currentPassage.title);
       console.log('Current session time:', sessionTime, 'seconds');
       console.log('Timer running state:', testStore.getState().timerRunning);
-      console.log('Difficulty filter:', difficultyFilter);
       
       // Start timing for the first question
       const firstQuestion = currentPassage.questions[0];
@@ -76,7 +78,7 @@ export default function TestPage() {
   useEffect(() => {
     if (highlightedAnchorRef.current && currentPassage) {
       const currentQuestion = currentPassage.questions[currentQuestionIndex];
-      const questionText = getQuestionText(currentQuestion);
+      const questionText = getDisplayedQuestionText(currentQuestion);
       const currentAnchorReference = extractAnchorReference(questionText);
       
       if (currentAnchorReference) {
@@ -90,7 +92,7 @@ export default function TestPage() {
         }, 100);
       }
     }
-  }, [currentQuestionIndex, currentPassage, difficultyFilter]);
+  }, [currentQuestionIndex, currentPassage, tutorModeActive]);
 
   if (!currentPassage || !currentSession) {
     return (
@@ -108,8 +110,8 @@ export default function TestPage() {
 
   const currentQuestion = currentPassage.questions[currentQuestionIndex];
   
-  // Get the appropriate question text based on difficulty
-  const displayedQuestionText = currentQuestion ? getQuestionText(currentQuestion) : '';
+  // Get the displayed question text based on tutor mode
+  const displayedQuestionText = currentQuestion ? getDisplayedQuestionText(currentQuestion) : '';
   
   // Extract anchor reference for highlighting
   const currentAnchorReference = extractAnchorReference(displayedQuestionText);
@@ -134,6 +136,18 @@ export default function TestPage() {
   const isLastQuestion = currentQuestionIndex === currentPassage.questions.length - 1;
   const currentPassageNumber = (currentSession.currentPassageIndex || 0) + 1;
   const totalPassages = passages.length;
+
+  const handleTutorModeToggle = () => {
+    setTutorModeActive(!tutorModeActive);
+    
+    // Track that tutor mode was used for this question
+    if (!tutorModeActive && currentQuestion) {
+      setTutorModeUsage(prev => ({
+        ...prev,
+        [currentQuestion.id]: true
+      }));
+    }
+  };
 
   const handleAnswerSelect = (questionId: string, answer: 'A' | 'B' | 'C' | 'D') => {
     console.log('Answer selected:', { questionId, answer });
@@ -219,7 +233,7 @@ export default function TestPage() {
     console.log('Answers being submitted:', answers);
     console.log('Current passage ID:', currentPassage.id);
     console.log('All questions:', currentPassage.questions.map(q => ({ id: q.id, number: q.questionNumber })));
-    console.log('Difficulty level:', difficultyFilter);
+    console.log('Tutor mode usage:', tutorModeUsage);
     
     if (!isComplete) {
       alert('Please answer all questions before submitting.');
@@ -255,6 +269,7 @@ export default function TestPage() {
         attempt.passageType = currentPassage.passageType || 'informational';
         attempt.readingTime = readingTime;
         attempt.answeringTime = answeringTime;
+        attempt.tutorModeUsage = tutorModeUsage;
       }
       console.log('Attempt created:', attempt);
 
@@ -322,11 +337,6 @@ export default function TestPage() {
       {/* Question Navigation */}
       <div className="question-nav">
         <p>Question {currentQuestionIndex + 1} of {currentPassage.questions.length}</p>
-        {difficultyFilter !== 'all' && (
-          <span className="difficulty-filter-badge">
-            Difficulty: {difficultyFilter}
-          </span>
-        )}
         <div className="progress-dots">
           {currentPassage.questions.map((_, index) => (
             <div
@@ -355,6 +365,17 @@ export default function TestPage() {
 
         {/* Question - Right Side (50%) */}
         <div className="question-side">
+          {testMode === 'practice' && currentQuestion.easyText && (
+            <div className="tutor-mode-toggle">
+              <button 
+                onClick={handleTutorModeToggle}
+                className={`btn-tutor ${tutorModeActive ? 'active' : ''}`}
+              >
+                {tutorModeActive ? '📖 Viewing Tutor Help' : '💡 Need Help?'}
+              </button>
+            </div>
+          )}
+          
           <h3 className="question-text">
             {currentQuestion.questionNumber}. {displayedQuestionText}
           </h3>

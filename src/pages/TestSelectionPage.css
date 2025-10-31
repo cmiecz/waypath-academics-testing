@@ -63,11 +63,10 @@
   margin: 0 auto;
 }
 
-/* Combined Mode and Difficulty Container */
-.mode-difficulty-container {
+/* Test Mode Container */
+.test-mode-container {
   display: flex;
-  gap: var(--spacing-md);
-  align-items: stretch;
+  justify-content: center;
   margin-bottom: var(--spacing-lg);
 }
 
@@ -177,67 +176,6 @@
   transform: translateX(28px);
 }
 
-/* Difficulty Selection */
-.difficulty-selection {
-  flex: 1;
-  background: var(--waypath-background);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(91, 155, 181, 0.1);
-  display: flex;
-  align-items: center;
-}
-
-.difficulty-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.difficulty-label {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--waypath-secondary);
-  margin: 0;
-  white-space: nowrap;
-}
-
-.difficulty-dropdown {
-  padding: 10px 16px;
-  border: 2px solid rgba(91, 155, 181, 0.3);
-  border-radius: var(--radius-lg);
-  background: white;
-  color: var(--waypath-secondary);
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 150px;
-  outline: none;
-}
-
-.difficulty-dropdown:hover {
-  border-color: var(--waypath-primary);
-  background: rgba(91, 155, 181, 0.05);
-}
-
-.difficulty-dropdown:focus {
-  border-color: var(--waypath-primary);
-  box-shadow: 0 0 0 3px rgba(91, 155, 181, 0.1);
-}
-
-.difficulty-description {
-  font-size: 0.875rem;
-  color: var(--waypath-text-secondary);
-  margin: 0;
-  font-style: italic;
-  flex: 1;
-  min-width: 250px;
-}
-
 /* Subjects Grid */
 .subjects-grid {
   display: grid;
@@ -324,19 +262,13 @@
 }
 
 @media (max-width: 768px) {
-  .mode-difficulty-container {
+  .test-mode-container {
     flex-direction: column;
     gap: var(--spacing-sm);
   }
 
   .test-mode-selection {
     justify-content: center;
-  }
-
-  .difficulty-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
   }
 
   .subjects-grid {
