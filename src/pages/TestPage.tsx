@@ -91,30 +91,39 @@ export default function TestPage() {
     }
   }, [currentQuestionIndex, answers, questionStartTimes, questionTimes, tutorModeUsage, currentSession, currentPassage]);
 
-  // Restore session state on mount
+  // Restore session state on mount or when session/passage loads
   useEffect(() => {
     if (currentSession && currentPassage && passages.length > 0) {
       const savedState = testStore.restoreSessionState();
-      if (savedState && savedState.sessionId === currentSession.id) {
-        console.log('Restoring saved session state...', savedState);
-        setCurrentQuestionIndex(savedState.currentQuestionIndex || 0);
-        setAnswers(savedState.answers || {});
-        setQuestionStartTimes(savedState.questionStartTimes || {});
-        setQuestionTimes(savedState.questionTimes || {});
-        setTutorModeUsage(savedState.tutorModeUsage || {});
-        
-        // Restore timer state
-        if (!savedState.timerRunning) {
-          testStore.pauseTimer();
+      console.log('Checking for saved state. Current session ID:', currentSession.id, 'Saved state:', savedState);
+      
+      if (savedState) {
+        if (savedState.sessionId === currentSession.id) {
+          console.log('✅ Session ID matches! Restoring saved session state...', savedState);
+          setCurrentQuestionIndex(savedState.currentQuestionIndex || 0);
+          setAnswers(savedState.answers || {});
+          setQuestionStartTimes(savedState.questionStartTimes || {});
+          setQuestionTimes(savedState.questionTimes || {});
+          setTutorModeUsage(savedState.tutorModeUsage || {});
+          
+          // Restore timer state
+          if (!savedState.timerRunning) {
+            testStore.pauseTimer();
+          }
+          
+          console.log('✅ Session restored successfully');
+        } else {
+          console.log('❌ Session ID mismatch. Saved:', savedState.sessionId, 'Current:', currentSession.id);
         }
-      } else if (savedState) {
-        console.log('Saved state exists but session ID mismatch. Saved:', savedState.sessionId, 'Current:', currentSession.id);
+      } else {
+        console.log('No saved state found or restoration failed');
       }
     }
 
     // Save state before page unload
     const handleBeforeUnload = () => {
       if (currentSession && currentPassage) {
+        console.log('Saving state before page unload...');
         testStore.saveSessionState(
           currentQuestionIndex,
           answers,
@@ -131,7 +140,7 @@ export default function TestPage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [currentSession?.id]); // Run when session ID changes
+  }, [currentSession?.id, currentPassage?.id]); // Run when session or passage changes
 
   // Reset tutor mode when question changes
   useEffect(() => {

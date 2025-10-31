@@ -67,13 +67,15 @@ class Store {
       throw new Error('No user logged in');
     }
 
-    // Check if there's a saved session we can resume
+    // Check if there's a saved session we can resume (don't require passages to be loaded yet)
     try {
       const saved = localStorage.getItem(SESSION_STORAGE_KEY);
-      if (saved && this.state.passages.length > 0) {
+      if (saved) {
         const savedState: SavedSessionState = JSON.parse(saved);
+        console.log('Found saved session state, checking if we can resume:', savedState);
         
         // Reuse the saved session ID to maintain continuity
+        // This allows restoration when returning to the page
         const existingSession: TestSession = {
           id: savedState.sessionId,
           userId: this.state.currentUser.id,
@@ -91,7 +93,7 @@ class Store {
           timerRunning: savedState.timerRunning 
         };
         this.notifyListeners();
-        console.log('Resuming existing session:', savedState.sessionId);
+        console.log('✅ Resuming existing session:', savedState.sessionId);
         return existingSession;
       }
     } catch (error) {
@@ -116,7 +118,7 @@ class Store {
     this.state = { ...this.state, currentSession: session, sessionTime: 2100, timerRunning: true };
     this.saveSessionState();
     this.notifyListeners();
-    console.log('Created new session:', session.id);
+    console.log('🆕 Created new session:', session.id);
     return session;
   }
 
@@ -156,18 +158,31 @@ class Store {
   restoreSessionState(): SavedSessionState | null {
     try {
       const saved = localStorage.getItem(SESSION_STORAGE_KEY);
-      if (!saved) return null;
-
-      const savedState: SavedSessionState = JSON.parse(saved);
-      
-      // Verify session still exists and is active
-      if (!this.state.currentSession || this.state.currentSession.id !== savedState.sessionId) {
+      if (!saved) {
+        console.log('No saved session state found in localStorage');
         return null;
       }
 
-      // Restore timer state
-      this.state.sessionTime = savedState.sessionTime;
-      this.state.timerRunning = savedState.timerRunning;
+      const savedState: SavedSessionState = JSON.parse(saved);
+      console.log('Found saved state:', savedState);
+      
+      // If we have a current session, verify it matches
+      if (this.state.currentSession) {
+        if (this.state.currentSession.id !== savedState.sessionId) {
+          console.log('Session ID mismatch. Saved:', savedState.sessionId, 'Current:', this.state.currentSession.id);
+          return null;
+        }
+      } else {
+        // No current session - we can still return the saved state
+        // The TestPage will use it when the session is created
+        console.log('No current session, but returning saved state for restoration');
+      }
+
+      // Restore timer state if session matches
+      if (this.state.currentSession && this.state.currentSession.id === savedState.sessionId) {
+        this.state.sessionTime = savedState.sessionTime;
+        this.state.timerRunning = savedState.timerRunning;
+      }
 
       return savedState;
     } catch (error) {
