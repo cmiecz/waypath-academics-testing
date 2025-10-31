@@ -19,20 +19,51 @@ export default function TestPage() {
     resumeTimer
   } = useTestStore();
 
-  const [answers, setAnswers] = useState<Record<string, 'A' | 'B' | 'C' | 'D'>>({});
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Initialize state from localStorage if available (for immediate restoration on mount)
+  const initializeFromStorage = () => {
+    try {
+      const saved = localStorage.getItem('act_prep_saved_session');
+      if (saved) {
+        const savedState = JSON.parse(saved);
+        console.log('🔍 Initializing from saved state:', savedState);
+        return {
+          questionIndex: savedState.currentQuestionIndex || 0,
+          answers: savedState.answers || {},
+          questionStartTimes: savedState.questionStartTimes || {},
+          questionTimes: savedState.questionTimes || {},
+          tutorModeUsage: savedState.tutorModeUsage || {},
+          sessionId: savedState.sessionId
+        };
+      }
+    } catch (error) {
+      console.error('Error initializing from storage:', error);
+    }
+    return {
+      questionIndex: 0,
+      answers: {},
+      questionStartTimes: {},
+      questionTimes: {},
+      tutorModeUsage: {},
+      sessionId: null
+    };
+  };
+
+  const initialState = initializeFromStorage();
+  const [answers, setAnswers] = useState<Record<string, 'A' | 'B' | 'C' | 'D'>>(initialState.answers);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(initialState.questionIndex);
   const [passageStartTime] = useState(Date.now());
   const [timerVisible, setTimerVisible] = useState(true);
+  const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, number>>(initialState.questionStartTimes);
+  const [questionTimes, setQuestionTimes] = useState<Record<string, number>>(initialState.questionTimes);
+  const [tutorModeUsage, setTutorModeUsage] = useState<Record<string, boolean>>(initialState.tutorModeUsage);
+  const [restoredSessionId, setRestoredSessionId] = useState<string | null>(initialState.sessionId);
   const highlightedAnchorRef = useRef<HTMLSpanElement>(null);
   
   // Tutor Mode state
   const [tutorModeActive, setTutorModeActive] = useState(false);
-  const [tutorModeUsage, setTutorModeUsage] = useState<Record<string, boolean>>({});
   
   // Analytics tracking
-  const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, number>>({});
   const [readingStartTime] = useState(Date.now());
-  const [questionTimes, setQuestionTimes] = useState<Record<string, number>>({});
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,26 +128,47 @@ export default function TestPage() {
       const savedState = testStore.restoreSessionState();
       console.log('Checking for saved state. Current session ID:', currentSession.id, 'Saved state:', savedState);
       
-      if (savedState) {
+      // Check if we already initialized with this session ID (from localStorage on mount)
+      if (restoredSessionId === currentSession.id) {
+        console.log('✅ Already initialized with correct session ID. State should be restored.');
+        // Verify the restoration is correct by checking if state matches
+        const currentSaved = testStore.restoreSessionState();
+        if (currentSaved && currentSaved.sessionId === currentSession.id) {
+          // Double-check and update if needed (in case saved state changed)
+          if (currentSaved.currentQuestionIndex !== currentQuestionIndex) {
+            console.log('🔄 Updating question index from saved state:', currentSaved.currentQuestionIndex);
+            setCurrentQuestionIndex(currentSaved.currentQuestionIndex || 0);
+          }
+          if (JSON.stringify(currentSaved.answers) !== JSON.stringify(answers)) {
+            console.log('🔄 Updating answers from saved state');
+            setAnswers(currentSaved.answers || {});
+          }
+        }
+      } else if (savedState) {
         if (savedState.sessionId === currentSession.id) {
           console.log('✅ Session ID matches! Restoring saved session state...', savedState);
+          console.log('📝 Restoring to question index:', savedState.currentQuestionIndex);
           setCurrentQuestionIndex(savedState.currentQuestionIndex || 0);
           setAnswers(savedState.answers || {});
           setQuestionStartTimes(savedState.questionStartTimes || {});
           setQuestionTimes(savedState.questionTimes || {});
           setTutorModeUsage(savedState.tutorModeUsage || {});
+          setRestoredSessionId(savedState.sessionId);
           
           // Restore timer state
           if (!savedState.timerRunning) {
             testStore.pauseTimer();
           }
           
-          console.log('✅ Session restored successfully');
+          console.log('✅ Session restored successfully - Question:', savedState.currentQuestionIndex, 'Answers:', Object.keys(savedState.answers || {}).length);
         } else {
           console.log('❌ Session ID mismatch. Saved:', savedState.sessionId, 'Current:', currentSession.id);
+          // Clear restored session ID if mismatch
+          setRestoredSessionId(null);
         }
       } else {
         console.log('No saved state found or restoration failed');
+        setRestoredSessionId(null);
       }
     }
 
@@ -260,7 +312,7 @@ export default function TestPage() {
         }
       }
       
-      setCurrentQuestionIndex(prev => prev + 1);
+      setCurrentQuestionIndex((prev: number) => prev + 1);
       
       // Start timing for next question
       const nextQuestion = currentPassage.questions[currentQuestionIndex + 1];
@@ -288,7 +340,7 @@ export default function TestPage() {
         }
       }
       
-      setCurrentQuestionIndex(prev => prev - 1);
+      setCurrentQuestionIndex((prev: number) => prev - 1);
       
       // Start timing for previous question
       const prevQuestion = currentPassage.questions[currentQuestionIndex - 1];
