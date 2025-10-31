@@ -14,7 +14,9 @@ export default function TestPage() {
     passages,
     sessionTime,
     incrementTime,
-    pauseTimer
+    pauseTimer,
+    timerRunning,
+    resumeTimer
   } = useTestStore();
 
   const [answers, setAnswers] = useState<Record<string, 'A' | 'B' | 'C' | 'D'>>({});
@@ -73,6 +75,61 @@ export default function TestPage() {
       clearInterval(timer);
     };
   }, [currentPassage]);
+
+  // Save session state to localStorage
+  useEffect(() => {
+    if (currentSession && currentPassage) {
+      testStore.saveSessionState(
+        currentQuestionIndex,
+        answers,
+        passageStartTime,
+        readingStartTime,
+        questionStartTimes,
+        questionTimes,
+        tutorModeUsage
+      );
+    }
+  }, [currentQuestionIndex, answers, questionStartTimes, questionTimes, tutorModeUsage, currentSession, currentPassage]);
+
+  // Restore session state on mount
+  useEffect(() => {
+    if (currentSession && currentPassage && passages.length > 0) {
+      const savedState = testStore.restoreSessionState();
+      if (savedState && savedState.sessionId === currentSession.id) {
+        console.log('Restoring saved session state...');
+        setCurrentQuestionIndex(savedState.currentQuestionIndex || 0);
+        setAnswers(savedState.answers || {});
+        setQuestionStartTimes(savedState.questionStartTimes || {});
+        setQuestionTimes(savedState.questionTimes || {});
+        setTutorModeUsage(savedState.tutorModeUsage || {});
+        
+        // Restore timer state - only if timer is paused (don't auto-resume)
+        if (!savedState.timerRunning) {
+          testStore.pauseTimer();
+        }
+      }
+    }
+
+    // Save state before page unload
+    const handleBeforeUnload = () => {
+      if (currentSession && currentPassage) {
+        testStore.saveSessionState(
+          currentQuestionIndex,
+          answers,
+          passageStartTime,
+          readingStartTime,
+          questionStartTimes,
+          questionTimes,
+          tutorModeUsage
+        );
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []); // Only run on mount
 
   // Reset tutor mode when question changes
   useEffect(() => {
@@ -283,6 +340,9 @@ export default function TestPage() {
         await saveTestResult(attempt);
       }
 
+      // Clear saved session state on completion
+      testStore.clearSavedSession();
+
       // Check if this is the last passage
       const currentPassageIndex = currentSession?.currentPassageIndex || 0;
       const isLastPassage = currentPassageIndex >= passages.length - 1;
@@ -328,6 +388,25 @@ export default function TestPage() {
         <div className="timer-container">
           {timerVisible && (
             <div className="timer">⏱ {formatTime(sessionTime)}</div>
+          )}
+          {testMode === 'practice' && (
+            <button
+              className="pause-resume-btn"
+              onClick={() => {
+                if (timerRunning) {
+                  pauseTimer();
+                } else {
+                  resumeTimer();
+                }
+              }}
+              title={timerRunning ? "Pause timer" : "Resume timer"}
+            >
+              {timerRunning ? (
+                <i className="fas fa-pause"></i>
+              ) : (
+                <i className="fas fa-play"></i>
+              )}
+            </button>
           )}
           <button 
             className="timer-toggle"

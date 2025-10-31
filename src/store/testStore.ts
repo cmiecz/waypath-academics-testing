@@ -11,7 +11,22 @@ interface TestState {
   actScores: ACTScoreResult | null;
 }
 
+interface SavedSessionState {
+  currentQuestionIndex: number;
+  answers: Record<string, 'A' | 'B' | 'C' | 'D'>;
+  sessionTime: number;
+  timerRunning: boolean;
+  passageStartTime: number;
+  readingStartTime: number;
+  questionStartTimes: Record<string, number>;
+  questionTimes: Record<string, number>;
+  tutorModeUsage: Record<string, boolean>;
+  sessionId: string;
+}
+
 type Listener = () => void;
+
+const SESSION_STORAGE_KEY = 'act_prep_saved_session';
 
 class Store {
   private state: TestState = {
@@ -62,19 +77,87 @@ class Store {
     };
 
     this.state = { ...this.state, currentSession: session, sessionTime: 2100, timerRunning: true };
+    this.saveSessionState();
     this.notifyListeners();
     return session;
+  }
+
+  // Save session state to localStorage
+  saveSessionState(
+    questionIndex?: number,
+    answers?: Record<string, 'A' | 'B' | 'C' | 'D'>,
+    passageStartTime?: number,
+    readingStartTime?: number,
+    questionStartTimes?: Record<string, number>,
+    questionTimes?: Record<string, number>,
+    tutorModeUsage?: Record<string, boolean>
+  ) {
+    if (!this.state.currentSession || this.state.passages.length === 0) return;
+
+    const savedState: SavedSessionState = {
+      currentQuestionIndex: questionIndex ?? (this.state.currentSession.currentPassageIndex || 0),
+      answers: answers || {},
+      sessionTime: this.state.sessionTime,
+      timerRunning: this.state.timerRunning,
+      passageStartTime: passageStartTime || Date.now(),
+      readingStartTime: readingStartTime || Date.now(),
+      questionStartTimes: questionStartTimes || {},
+      questionTimes: questionTimes || {},
+      tutorModeUsage: tutorModeUsage || {},
+      sessionId: this.state.currentSession.id
+    };
+
+    try {
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(savedState));
+    } catch (error) {
+      console.error('Failed to save session state:', error);
+    }
+  }
+
+  // Restore session state from localStorage
+  restoreSessionState(): SavedSessionState | null {
+    try {
+      const saved = localStorage.getItem(SESSION_STORAGE_KEY);
+      if (!saved) return null;
+
+      const savedState: SavedSessionState = JSON.parse(saved);
+      
+      // Verify session still exists and is active
+      if (!this.state.currentSession || this.state.currentSession.id !== savedState.sessionId) {
+        return null;
+      }
+
+      // Restore timer state
+      this.state.sessionTime = savedState.sessionTime;
+      this.state.timerRunning = savedState.timerRunning;
+
+      return savedState;
+    } catch (error) {
+      console.error('Failed to restore session state:', error);
+      return null;
+    }
+  }
+
+  // Clear saved session state
+  clearSavedSession() {
+    try {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear saved session:', error);
+    }
   }
 
   pauseTimer() {
     console.log('⏸️ Timer PAUSED - Time remaining:', this.state.sessionTime, 'seconds');
     this.state = { ...this.state, timerRunning: false };
+    this.saveSessionState();
     this.notifyListeners();
   }
 
   resumeTimer() {
     console.log('▶️ Timer RESUMED - Time remaining:', this.state.sessionTime, 'seconds');
     this.state = { ...this.state, timerRunning: true };
+    this.saveSessionState();
     this.notifyListeners();
   }
 
