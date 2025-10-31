@@ -42,6 +42,49 @@
   width: 100%;
   box-shadow: var(--shadow-lg);
   border: 1px solid rgba(91, 155, 181, 0.1);
+  position: relative;
+}
+
+/* Dev Mode Toggle */
+.dev-mode-toggle {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 193, 7, 0.95);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xs) var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  z-index: 10;
+}
+
+.dev-mode-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+}
+
+.dev-mode-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--waypath-primary);
+}
+
+.dev-mode-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #856404;
+  cursor: pointer;
+}
+
+.dev-mode-toggle:hover {
+  background: rgba(255, 193, 7, 1);
+  box-shadow: var(--shadow-lg);
 }
 
 .login-header {

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTestStore } from '../hooks/useTestStore';
 import { signInWithMagicLink } from '../api/auth';
 import './LoginPage.css';
 
 type ViewMode = 'magic-link' | 'signup' | 'admin-login';
+
+const DEV_MODE_KEY = 'act_prep_dev_mode';
 
 export default function LoginPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('magic-link');
@@ -16,9 +18,52 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [devMode, setDevMode] = useState(() => {
+    return localStorage.getItem(DEV_MODE_KEY) === 'true';
+  });
   
   const { setUser } = useTestStore();
   const navigate = useNavigate();
+
+  // Auto-login if dev mode is enabled
+  useEffect(() => {
+    if (devMode) {
+      const devUser = {
+        id: 'dev_user',
+        name: 'Dev User',
+        email: 'dev@waypathacademics.com',
+        grade: 11,
+        registeredAt: new Date().toISOString()
+      };
+      
+      setUser(devUser);
+      // Small delay to ensure state is set
+      setTimeout(() => {
+        navigate('/test-selection');
+      }, 100);
+    }
+  }, [devMode, setUser, navigate]);
+
+  const handleDevModeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const enabled = e.target.checked;
+    setDevMode(enabled);
+    localStorage.setItem(DEV_MODE_KEY, enabled.toString());
+    
+    if (enabled) {
+      const devUser = {
+        id: 'dev_user',
+        name: 'Dev User',
+        email: 'dev@waypathacademics.com',
+        grade: 11,
+        registeredAt: new Date().toISOString()
+      };
+      
+      setUser(devUser);
+      setTimeout(() => {
+        navigate('/test-selection');
+      }, 100);
+    }
+  };
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,6 +179,19 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-container">
+        {/* Dev Mode Toggle */}
+        <div className="dev-mode-toggle">
+          <label className="dev-mode-checkbox">
+            <input
+              type="checkbox"
+              checked={devMode}
+              onChange={handleDevModeToggle}
+              disabled={loading}
+            />
+            <span className="dev-mode-label">🔧 Dev Mode (Skip Login)</span>
+          </label>
+        </div>
+
         <div className="login-header">
           <div className="logo-waypath">
             <div className="logo-icon">W</div>
