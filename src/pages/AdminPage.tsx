@@ -19,7 +19,6 @@ export default function AdminPage() {
   
   // AI Generation states
   const [aiSubject, setAiSubject] = useState<'English' | 'Math' | 'Reading' | 'Science'>('English');
-  const [aiDifficulty, setAiDifficulty] = useState<'Easy' | 'Medium' | 'Hard'>('Medium');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
   const [aiSuccess, setAiSuccess] = useState('');
@@ -198,7 +197,7 @@ export default function AdminPage() {
     try {
       const passage = await generatePassageWithQuestions({
         subject: aiSubject,
-        difficulty: aiDifficulty
+        difficulty: 'Medium' // Default difficulty - all questions will have both easyText and hardText
       });
 
       setGeneratedPassage(passage);
@@ -310,7 +309,7 @@ export default function AdminPage() {
         <div className="upload-section" style={{ marginBottom: '2rem' }}>
           <h2><i className="fas fa-robot"></i> Generate Passage with AI</h2>
           <p style={{ marginBottom: '1.5rem', color: '#666' }}>
-            Use AI to automatically generate a complete passage with questions. The generated passage will be set to inactive so you can review it before making it available to students.
+            Use AI to automatically generate a complete passage with questions. Every question will include both an actual test question (hardText) and a helper/tutoring version (easyText) that explicitly names the grammar rule. The generated passage will be set to inactive so you can review it before making it available to students.
           </p>
           
           <div className="form-row">
@@ -323,25 +322,26 @@ export default function AdminPage() {
                 disabled={aiLoading}
               >
                 <option value="English">English</option>
-                <option value="Math">Math</option>
-                <option value="Reading">Reading</option>
-                <option value="Science">Science</option>
+                <option value="Math" disabled>Math (Coming Soon)</option>
+                <option value="Reading" disabled>Reading (Coming Soon)</option>
+                <option value="Science" disabled>Science (Coming Soon)</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="ai-difficulty">Difficulty</label>
-              <select
-                id="ai-difficulty"
-                value={aiDifficulty}
-                onChange={(e) => setAiDifficulty(e.target.value as any)}
-                disabled={aiLoading}
-              >
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-            </div>
+          </div>
+          
+          <div style={{ 
+            marginBottom: '1rem', 
+            padding: '0.75rem', 
+            backgroundColor: '#e6f3ff', 
+            borderRadius: '4px',
+            fontSize: '0.9rem',
+            color: '#004085'
+          }}>
+            <strong>📝 Note:</strong> All generated questions will include both versions:
+            <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
+              <li><strong>Actual Test Question (hardText):</strong> Broad/interpretive format like real ACT questions</li>
+              <li><strong>Helper Version (easyText):</strong> Explicitly names the grammar rule or concept for tutoring</li>
+            </ul>
           </div>
 
           {aiError && <div className="error-message">{aiError}</div>}
@@ -384,8 +384,7 @@ export default function AdminPage() {
               
               <div style={{ marginBottom: '1rem' }}>
                 <strong>Subject:</strong> {generatedPassage.subject} | 
-                <strong> Difficulty:</strong> {generatedPassage.difficulty} | 
-                <strong> Questions:</strong> {generatedPassage.questions.length}
+                <strong> Questions:</strong> {generatedPassage.questions.length} (all with easyText and hardText versions)
               </div>
 
               <div style={{ 

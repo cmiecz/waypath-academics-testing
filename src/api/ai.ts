@@ -66,11 +66,15 @@ PASSAGE REQUIREMENTS:
 - Writing style: Similar to ACT English test passages - clear, engaging, appropriate for high school level
 
 QUESTION REQUIREMENTS (12-15 questions total):
+IMPORTANT: EVERY question MUST have BOTH easyText and hardText versions:
+- easyText: Tutoring help version that explicitly names the grammar rule or concept being tested (e.g., "Which choice correctly maintains subject-verb agreement?")
+- hardText: Actual test question that is broad/interpretive (e.g., "Which choice is most effective?")
+
 Each question must have:
 1. questionNumber: Sequential number starting at 1
-2. text: Default question text (fallback)
-3. easyText: Tutoring help version that explicitly names the grammar rule or concept being tested (e.g., "Which choice correctly maintains subject-verb agreement?")
-4. hardText: Actual test question that is broad/interpretive (e.g., "Which choice is most effective?")
+2. text: Default question text (fallback - can be same as hardText)
+3. easyText: REQUIRED - Tutoring help version that explicitly names the grammar rule or concept
+4. hardText: REQUIRED - Actual test question that is broad/interpretive
 5. options: Four choices A, B, C, D where A is often "No Change"
 6. correctAnswer: One of A, B, C, or D
 7. explanation: Clear explanation of why the answer is correct
