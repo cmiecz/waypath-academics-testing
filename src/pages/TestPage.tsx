@@ -374,17 +374,31 @@ export default function TestPage() {
             <h3 className="question-text">
               {currentQuestion.questionNumber}. {displayedQuestionText}
             </h3>
-            {testMode === 'practice' && currentQuestion.easyText && (
-              <div className="tutor-mode-toggle">
-                <button 
-                  onClick={handleTutorModeToggle}
-                  className={`btn-tutor ${tutorModeActive ? 'active' : ''}`}
-                >
-                  {tutorModeActive ? '📖 Viewing Tutor Help' : '💡 Need Help?'}
-                </button>
-              </div>
-            )}
           </div>
+          
+          {testMode === 'practice' && currentQuestion.easyText && (
+            <div className="tutor-help-container">
+              <button 
+                onClick={handleTutorModeToggle}
+                className={`tutor-help-btn ${tutorModeActive ? 'active' : ''}`}
+                title={tutorModeActive ? 'Click to view actual question' : 'Click for tutoring help'}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  {tutorModeActive ? (
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  ) : (
+                    <>
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>
+                    </>
+                  )}
+                </svg>
+                <span className="tutor-help-label">
+                  {tutorModeActive ? 'Help Active' : 'Get Help'}
+                </span>
+              </button>
+            </div>
+          )}
 
           <div className="options">
             {Object.entries(currentQuestion.options).map(([letter, option]) => (

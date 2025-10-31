@@ -173,13 +173,9 @@
   border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Question Header with Tutor Mode Toggle */
+/* Question Header */
 .question-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .question-text {
@@ -189,48 +185,67 @@
   margin: 0;
   line-height: 1.5;
   letter-spacing: -0.2px;
-  flex: 1;
 }
 
-/* Tutor Mode Toggle */
-.tutor-mode-toggle {
+/* Tutor Help Button - Subtle Design */
+.tutor-help-container {
   display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.tutor-help-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background-color: #fafafa;
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.tutor-help-btn:hover {
+  border-color: #007aff;
+  background-color: #f0f9ff;
+  color: #007aff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+}
+
+.tutor-help-btn:active {
+  transform: translateY(0);
+}
+
+.tutor-help-btn svg {
+  transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
-.btn-tutor {
-  padding: 12px 24px;
-  border: 2px solid #d2d2d7;
-  border-radius: 12px;
-  background-color: #ffffff;
-  color: #1d1d1f;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  letter-spacing: -0.2px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.btn-tutor:hover {
-  border-color: #007aff;
-  background-color: #f0f9ff;
-  transform: scale(1.02);
-}
-
-.btn-tutor.active {
+.tutor-help-btn.active {
   border-color: #34c759;
-  background-color: #34c759;
-  color: white;
-  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }
 
-.btn-tutor.active:hover {
-  background-color: #2fb350;
-  border-color: #2fb350;
+.tutor-help-btn.active:hover {
+  border-color: #2e7d32;
+  background-color: #c8e6c9;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.2);
+}
+
+.tutor-help-btn.active svg {
+  stroke: #2e7d32;
+}
+
+.tutor-help-label {
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 .options {
