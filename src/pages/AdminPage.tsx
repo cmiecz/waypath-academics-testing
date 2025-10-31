@@ -4,6 +4,7 @@ import { supabase } from '../api/supabase';
 import { Passage, Question } from '../types/act';
 import { signOut } from '../api/auth';
 import { useTestStore } from '../hooks/useTestStore';
+import { generatePassageWithQuestions } from '../api/ai';
 import './AdminPage.css';
 
 export default function AdminPage() {
@@ -15,6 +16,16 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // AI Generation states
+  const [aiSubject, setAiSubject] = useState<'English' | 'Math' | 'Reading' | 'Science'>('English');
+  const [aiDifficulty, setAiDifficulty] = useState<'Easy' | 'Medium' | 'Hard'>('Medium');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [aiSuccess, setAiSuccess] = useState('');
+  const [generatedPassage, setGeneratedPassage] = useState<Passage | null>(null);
+  const [showGeneratedPreview, setShowGeneratedPreview] = useState(false);
+  
   const navigate = useNavigate();
   const { setUser } = useTestStore();
 
@@ -177,6 +188,106 @@ export default function AdminPage() {
     }
   };
 
+  const handleGeneratePassage = async () => {
+    setAiLoading(true);
+    setAiError('');
+    setAiSuccess('');
+    setGeneratedPassage(null);
+    setShowGeneratedPreview(false);
+
+    try {
+      const passage = await generatePassageWithQuestions({
+        subject: aiSubject,
+        difficulty: aiDifficulty
+      });
+
+      setGeneratedPassage(passage);
+      setShowGeneratedPreview(true);
+      
+      // Pre-fill the manual upload form with generated content for editing
+      setPassageTitle(passage.title);
+      setPassageText(passage.content);
+      setPassageSubject(passage.subject);
+      setPassageDifficulty(passage.difficulty);
+      
+      // Convert questions to CSV format for editing
+      const csvRows = ['Question Number,Default Text,Easy Text (Tutor Help),Hard Text (Actual),Option A,Option B,Option C,Option D,Correct Answer,Explanation,Question Type'];
+      passage.questions.forEach(q => {
+        const row = [
+          q.questionNumber,
+          `"${q.text.replace(/"/g, '""')}"`,
+          q.easyText ? `"${q.easyText.replace(/"/g, '""')}"` : '',
+          q.hardText ? `"${q.hardText.replace(/"/g, '""')}"` : '',
+          `"${q.options.A.replace(/"/g, '""')}"`,
+          `"${q.options.B.replace(/"/g, '""')}"`,
+          `"${q.options.C.replace(/"/g, '""')}"`,
+          `"${q.options.D.replace(/"/g, '""')}"`,
+          q.correctAnswer,
+          `"${q.explanation.replace(/"/g, '""')}"`,
+          q.questionType || 'detail'
+        ];
+        csvRows.push(row.join(','));
+      });
+      setCsvContent(csvRows.join('\n'));
+
+      setAiSuccess(`Successfully generated passage "${passage.title}" with ${passage.questions.length} questions!`);
+    } catch (err: any) {
+      console.error('AI generation error:', err);
+      setAiError(err.message || 'Failed to generate passage. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleSaveGeneratedPassage = async () => {
+    if (!generatedPassage) {
+      setAiError('No generated passage to save');
+      return;
+    }
+
+    setAiLoading(true);
+    setAiError('');
+    setAiSuccess('');
+
+    try {
+      const { error: dbError } = await supabase
+        .from('passages')
+        .insert({
+          id: generatedPassage.id,
+          title: generatedPassage.title,
+          content: generatedPassage.content,
+          subject: generatedPassage.subject,
+          difficulty: generatedPassage.difficulty,
+          questions: generatedPassage.questions,
+          is_active: false, // Default to inactive for admin review
+          word_count: generatedPassage.wordCount,
+          estimated_reading_time: generatedPassage.estimatedReadingTime,
+          passage_type: generatedPassage.passageType,
+          topic: generatedPassage.topic
+        });
+
+      if (dbError) {
+        throw new Error(`Database error: ${dbError.message}`);
+      }
+
+      setAiSuccess(`Passage "${generatedPassage.title}" saved successfully! It is set to inactive - you can activate it in Passage Management.`);
+      setGeneratedPassage(null);
+      setShowGeneratedPreview(false);
+    } catch (err: any) {
+      console.error('Save error:', err);
+      setAiError(err.message || 'Failed to save passage');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleGenerateAnother = () => {
+    setGeneratedPassage(null);
+    setShowGeneratedPreview(false);
+    setAiSuccess('');
+    handleGeneratePassage();
+  };
+
   return (
     <div className="admin-page">
       <div className="admin-container">
@@ -193,6 +304,155 @@ export default function AdminPage() {
               <i className="fas fa-sign-out-alt"></i> Sign Out
             </button>
           </div>
+        </div>
+
+        {/* AI Generation Section */}
+        <div className="upload-section" style={{ marginBottom: '2rem' }}>
+          <h2><i className="fas fa-robot"></i> Generate Passage with AI</h2>
+          <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+            Use AI to automatically generate a complete passage with questions. The generated passage will be set to inactive so you can review it before making it available to students.
+          </p>
+          
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="ai-subject">Subject</label>
+              <select
+                id="ai-subject"
+                value={aiSubject}
+                onChange={(e) => setAiSubject(e.target.value as any)}
+                disabled={aiLoading}
+              >
+                <option value="English">English</option>
+                <option value="Math">Math</option>
+                <option value="Reading">Reading</option>
+                <option value="Science">Science</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="ai-difficulty">Difficulty</label>
+              <select
+                id="ai-difficulty"
+                value={aiDifficulty}
+                onChange={(e) => setAiDifficulty(e.target.value as any)}
+                disabled={aiLoading}
+              >
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          {aiError && <div className="error-message">{aiError}</div>}
+          {aiSuccess && <div className="success-message">{aiSuccess}</div>}
+
+          {!showGeneratedPreview && (
+            <button 
+              onClick={handleGeneratePassage} 
+              className="btn-submit"
+              disabled={aiLoading}
+              style={{ backgroundColor: '#667eea', marginTop: '1rem' }}
+            >
+              {aiLoading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin"></i> Generating Passage...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-magic"></i> Generate Passage
+                </>
+              )}
+            </button>
+          )}
+
+          {showGeneratedPreview && generatedPassage && (
+            <div style={{ 
+              marginTop: '2rem', 
+              padding: '1.5rem', 
+              backgroundColor: '#f8f9fa', 
+              borderRadius: '8px',
+              border: '2px solid #667eea'
+            }}>
+              <h3 style={{ marginTop: 0, color: '#667eea' }}>
+                <i className="fas fa-eye"></i> Generated Passage Preview
+              </h3>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Title:</strong> {generatedPassage.title}
+              </div>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Subject:</strong> {generatedPassage.subject} | 
+                <strong> Difficulty:</strong> {generatedPassage.difficulty} | 
+                <strong> Questions:</strong> {generatedPassage.questions.length}
+              </div>
+
+              <div style={{ 
+                marginBottom: '1rem',
+                padding: '1rem',
+                backgroundColor: 'white',
+                borderRadius: '4px',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                fontSize: '0.9rem',
+                lineHeight: '1.5'
+              }}>
+                <strong>Passage Content (first 500 chars):</strong>
+                <div style={{ marginTop: '0.5rem' }}>
+                  {generatedPassage.content.substring(0, 500)}...
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <button 
+                  onClick={handleSaveGeneratedPassage} 
+                  className="btn-submit"
+                  disabled={aiLoading}
+                  style={{ backgroundColor: '#48bb78' }}
+                >
+                  {aiLoading ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin"></i> Saving...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-save"></i> Save Generated Passage
+                    </>
+                  )}
+                </button>
+
+                <button 
+                  onClick={handleGenerateAnother} 
+                  className="btn-submit"
+                  disabled={aiLoading}
+                  style={{ backgroundColor: '#667eea' }}
+                >
+                  <i className="fas fa-redo"></i> Generate Another Passage
+                </button>
+
+                <button 
+                  onClick={() => {
+                    setShowGeneratedPreview(false);
+                    setGeneratedPassage(null);
+                  }} 
+                  className="btn-secondary"
+                  disabled={aiLoading}
+                >
+                  <i className="fas fa-times"></i> Cancel
+                </button>
+              </div>
+
+              <p style={{ 
+                marginTop: '1rem', 
+                fontSize: '0.85rem', 
+                color: '#666',
+                fontStyle: 'italic'
+              }}>
+                Note: The generated content has been pre-filled in the manual upload form below. You can edit it there before saving, or save the generated version directly above.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="upload-section">
