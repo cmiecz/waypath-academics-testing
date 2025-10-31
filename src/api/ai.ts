@@ -66,15 +66,14 @@ PASSAGE REQUIREMENTS:
 - Writing style: Similar to ACT English test passages - clear, engaging, appropriate for high school level
 
 QUESTION REQUIREMENTS (CRITICAL - MUST BE EXACTLY 15 QUESTIONS):
-IMPORTANT: EVERY question MUST have BOTH easyText and hardText versions:
-- easyText: Tutoring help version that explicitly names the grammar rule or concept being tested (e.g., "Which choice correctly maintains subject-verb agreement?")
-- hardText: Actual test question that is broad/interpretive (e.g., "Which choice is most effective?")
+IMPORTANT: EVERY question MUST have BOTH a main question (text) and an easyText version:
+- text: REQUIRED - The main actual test question (broad/interpretive like real ACT questions, e.g., "Which choice is most effective?")
+- easyText: REQUIRED - Tutoring help version that explicitly names the grammar rule or concept being tested (e.g., "Which choice correctly maintains subject-verb agreement?")
 
 Each question must have:
 1. questionNumber: Sequential number starting at 1
-2. text: Default question text (fallback - can be same as hardText)
+2. text: REQUIRED - The main actual test question (this is what students see - broad/interpretive format)
 3. easyText: REQUIRED - Tutoring help version that explicitly names the grammar rule or concept
-4. hardText: REQUIRED - Actual test question that is broad/interpretive
 5. options: Four choices A, B, C, D where A is often "No Change"
 6. correctAnswer: One of A, B, C, or D
 7. explanation: Clear explanation of why the answer is correct
@@ -104,9 +103,8 @@ Return ONLY a valid JSON object with this structure:
   "questions": [
     {
       "questionNumber": 1,
-      "text": "Full question text with anchor reference",
-      "easyText": "Tutoring help version that names the rule/concept explicitly",
-      "hardText": "Vague interpretive version",
+      "text": "Main actual test question (broad/interpretive format like real ACT questions)",
+      "easyText": "Tutoring help version that explicitly names the grammar rule or concept",
       "options": {"A": "...", "B": "...", "C": "...", "D": "..."},
       "correctAnswer": "A",
       "explanation": "Why this answer is correct",
@@ -119,7 +117,10 @@ Return ONLY a valid JSON object with this structure:
 CRITICAL REQUIREMENTS:
 - You MUST generate exactly 15 questions - no more, no less. This is the standard ACT English format.
 - Passage must be 400-500 words to match ACT English test standards.
-- Every question MUST have both easyText and hardText versions.
+- Every question MUST have both text (main question) and easyText (tutor help) versions.
+- The text field is the main actual test question (broad/interpretive like real ACT questions).
+- The easyText field is the tutoring help version (explicitly names the grammar rule).
+- Do NOT include a hardText field - text is the main question.
 - Make sure the passage is interesting, the questions are well-written, and the difficulty matches ${difficulty} level.
 - Ensure you include exactly 15 question objects in the questions array.`;
 
@@ -193,9 +194,9 @@ CRITICAL REQUIREMENTS:
     const formattedQuestions: Question[] = generated.questions.map((q: any, index: number) => ({
       id: `q${index + 1}`,
       questionNumber: q.questionNumber || index + 1,
-      text: q.text || '',
+      text: q.text || q.hardText || '', // Main question - use text as primary, hardText as fallback for backward compatibility
       easyText: q.easyText,
-      hardText: q.hardText || q.text,
+      hardText: q.text || q.hardText || '', // Set hardText same as text for backward compatibility
       options: q.options || { A: '', B: '', C: '', D: '' },
       correctAnswer: (q.correctAnswer || 'A').toUpperCase() as 'A' | 'B' | 'C' | 'D',
       explanation: q.explanation || 'No explanation provided.',

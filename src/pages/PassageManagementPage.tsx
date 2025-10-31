@@ -441,15 +441,18 @@ export default function PassageManagementPage() {
                       Question {question.questionNumber}
                     </div>
 
-                    {/* Default Text */}
+                    {/* Main Question */}
                     <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                      <label style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Default Text:</label>
-                      <input
-                        type="text"
-                        value={question.text || ''}
-                        onChange={(e) => updateQuestion(index, { text: e.target.value })}
+                      <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#667eea' }}>Main Question (Actual Test Question):</label>
+                      <textarea
+                        value={question.text || question.hardText || ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          updateQuestion(index, { text: value, hardText: value }); // Keep them in sync
+                        }}
                         className="form-control"
-                        style={{ fontSize: '0.9rem' }}
+                        style={{ fontSize: '0.9rem', minHeight: '80px' }}
+                        placeholder="Broad/interpretive format like real ACT questions (e.g., 'Which choice is most effective?')"
                       />
                     </div>
 
@@ -460,20 +463,8 @@ export default function PassageManagementPage() {
                         value={question.easyText || ''}
                         onChange={(e) => updateQuestion(index, { easyText: e.target.value })}
                         className="form-control"
-                        style={{ fontSize: '0.9rem', minHeight: '60px' }}
-                        placeholder="Explicitly names the grammar rule or concept"
-                      />
-                    </div>
-
-                    {/* Hard Text */}
-                    <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                      <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#e53e3e' }}>Hard Text (Actual Question):</label>
-                      <textarea
-                        value={question.hardText || ''}
-                        onChange={(e) => updateQuestion(index, { hardText: e.target.value })}
-                        className="form-control"
-                        style={{ fontSize: '0.9rem', minHeight: '60px' }}
-                        placeholder="Broad/interpretive format like real ACT questions"
+                        style={{ fontSize: '0.9rem', minHeight: '80px' }}
+                        placeholder="Explicitly names the grammar rule or concept (e.g., 'Which choice correctly maintains subject-verb agreement?')"
                       />
                     </div>
 

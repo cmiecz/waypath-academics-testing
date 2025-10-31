@@ -346,7 +346,7 @@ export default function AdminPage() {
         <div className="upload-section" style={{ marginBottom: '2rem' }}>
           <h2><i className="fas fa-robot"></i> Generate Passage with AI</h2>
           <p style={{ marginBottom: '1.5rem', color: '#666' }}>
-            Use AI to automatically generate a complete passage with exactly 15 questions (ACT English format). Every question will include both an actual test question (hardText) and a helper/tutoring version (easyText) that explicitly names the grammar rule. The generated passage will be set to inactive so you can review it before making it available to students.
+            Use AI to automatically generate a complete passage with exactly 15 questions (ACT English format). Every question will include both a main test question and a helper/tutoring version (easyText) that explicitly names the grammar rule. The generated passage will be set to inactive so you can review it before making it available to students.
           </p>
           
           <div className="form-row">
@@ -376,7 +376,7 @@ export default function AdminPage() {
           }}>
             <strong>📝 Note:</strong> All generated questions will include both versions:
             <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
-              <li><strong>Actual Test Question (hardText):</strong> Broad/interpretive format like real ACT questions</li>
+              <li><strong>Main Question (text):</strong> The actual test question - broad/interpretive format like real ACT questions</li>
               <li><strong>Helper Version (easyText):</strong> Explicitly names the grammar rule or concept for tutoring</li>
             </ul>
           </div>
@@ -430,7 +430,7 @@ export default function AdminPage() {
               
               <div style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#666' }}>
                 <strong>Subject:</strong> {editablePassage.subject} | 
-                <strong> Questions:</strong> {editablePassage.questions.length} (all with easyText and hardText versions) |
+                <strong> Questions:</strong> {editablePassage.questions.length} (all with main question and easyText tutor help) |
                 <strong> Word Count:</strong> {editablePassage.content.split(/\s+/).filter(Boolean).length}
               </div>
 
@@ -475,15 +475,18 @@ export default function AdminPage() {
                         Question {question.questionNumber}
                       </div>
 
-                      {/* Default Text */}
+                      {/* Main Question */}
                       <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Default Text:</label>
-                        <input
-                          type="text"
-                          value={question.text || ''}
-                          onChange={(e) => updateQuestion(index, { text: e.target.value })}
+                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#667eea' }}>Main Question (Actual Test Question):</label>
+                        <textarea
+                          value={question.text || question.hardText || ''}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            updateQuestion(index, { text: value, hardText: value }); // Keep them in sync
+                          }}
                           className="form-control"
-                          style={{ fontSize: '0.9rem' }}
+                          style={{ fontSize: '0.9rem', minHeight: '80px' }}
+                          placeholder="Broad/interpretive format like real ACT questions (e.g., 'Which choice is most effective?')"
                         />
                       </div>
 
@@ -494,20 +497,8 @@ export default function AdminPage() {
                           value={question.easyText || ''}
                           onChange={(e) => updateQuestion(index, { easyText: e.target.value })}
                           className="form-control"
-                          style={{ fontSize: '0.9rem', minHeight: '60px' }}
-                          placeholder="Explicitly names the grammar rule or concept"
-                        />
-                      </div>
-
-                      {/* Hard Text (Actual Question) */}
-                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#e53e3e' }}>Hard Text (Actual Question):</label>
-                        <textarea
-                          value={question.hardText || ''}
-                          onChange={(e) => updateQuestion(index, { hardText: e.target.value })}
-                          className="form-control"
-                          style={{ fontSize: '0.9rem', minHeight: '60px' }}
-                          placeholder="Broad/interpretive format like real ACT questions"
+                          style={{ fontSize: '0.9rem', minHeight: '80px' }}
+                          placeholder="Explicitly names the grammar rule or concept (e.g., 'Which choice correctly maintains subject-verb agreement?')"
                         />
                       </div>
 
